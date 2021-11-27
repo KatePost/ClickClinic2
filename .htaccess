@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# force use of HTTPS (encryption) on 
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP_HOST} fsd01.ca
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
+
+# deny access to certain directories that must never be accessed from a web browser
+RewriteRule ^/?(templates|logs|tmplcache|vendor)/(.*)$ - [R=404,L]
+
+# give all requests to index.php (that are not URLs to files)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]

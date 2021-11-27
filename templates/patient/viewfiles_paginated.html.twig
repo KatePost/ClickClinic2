@@ -1,0 +1,79 @@
+
+{% extends "patient/master.html.twig" %}
+{% block title %}My Files
+{% endblock title %}
+{% block addHead %}
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+<div class="container  bg-light p-4">
+	<h1>My Files</h1>
+
+	 {% if results %} 
+
+
+		<table class="table table-striped table-hover" class="table table-striped">
+			<thead>
+				<th>Date Uploaded</th>
+				<th>Uploaded By</th>
+				<th>File Name</th>
+				<th>File Description</th>
+				<th>File</th>
+			</thead>
+			{% for r in results %}
+				<tr >
+					<td>{{ r.date }}</td>
+					<td>
+						{% if r.uploadedBy == 'patient' %}
+							{{ r.patientFirstName }}
+							{{ r.patientLastName }}
+						{% elseif r.uploadedBy == 'doctor' %}
+							Dr.
+							{{ r.doctorFirstName }}
+							{{ r.doctorLastName }}
+						{% else %}
+							Admin
+						{% endif %}
+					</td>
+					<td>{{ r.fileName }}</td>
+					<td>{{ r.description }}</td>
+					<td>
+						{% if r.ext == 'pdf' %}
+							<img src="/images/pdf17.png" width="150"/>
+						{% else %}
+							<img src="{{ r.file }}" width="150"/>
+						{% endif %}
+					</td>
+					<td>
+						<button type="button" class="btn btn-primary"><a href="{{ r.file }}" download="{{ r.fileName }}" id="downloadFile">Download</a></button>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<div>
+			{% if prevNo %}
+				<a href="/patient/viewfiles/paginated/{{prevNo}}">Previous</a>
+			{% endif %}
+			{% for no in 1.. maxPages %}
+				{% if no == pageNo %}
+					<b>{{no}}</b>
+				{% else %}
+					<a href="/patient/viewfiles/paginated/{{no}}">{{no}}</a>
+				{% endif %}
+			{% endfor %}
+			{% if nextNo %}
+				<a href="/patient/viewfiles/paginated/{{nextNo}}">Next</a>{% endif %}
+				{% else %}
+    			<div>You do not have any files.</div>
+			{% endif %}
+		</div>
+	{# {% endif %} #}
+	</div>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}
+

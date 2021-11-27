@@ -1,0 +1,82 @@
+{% extends "doctor/master.html.twig" %}
+{% block title %}User Profile{% endblock title %}
+{% block addHead %}
+<style>
+#editableList li input{
+    display: none;
+}
+#editableList li.edit span{
+    display: none;
+}
+#editableList li.edit input {
+    display: initial;
+}
+button{
+    float: right;
+}
+</style>
+<script async defer>
+    $(document).ready(function(){
+        $("li").on("click", "button[type='button']", editField);
+        $("li").on("click", "button[type='submit']", saveField);
+        $("li").on("change", "select", function(){
+            $(this).siblings('input').val($(this).val());
+        });
+    });
+    function editField(){
+        $(this).parent().addClass("edit");
+        $(this).siblings("input").removeAttr("readonly");
+        $(this).html("Submit");
+        $(this).attr("type", "submit");
+    }
+    function saveField(){
+        //check if input has been changed. 
+            console.log("existing value: " + $(this).siblings('span').html());
+            console.log("new value: " + $(this).siblings('input').val());
+            console.log("request sent: " + ($(this).siblings('span').html() != $(this).siblings('input').val()));
+        if($(this).siblings('span').html() != $(this).siblings('input').val() &&  $(this).siblings('input').val() ){
+            
+            let update = button => $(button).parent().load(document.location + " #" + $(button).parent().attr('id') + ">*")//$(button).siblings('span').html($(button).siblings('input').val());//arrow function to update the list item when the update succeeds
+            let button = this;//variable to transfar "this" into the post
+
+            $.post("/doctor/modify/formfield", { //post to this url, these values
+                "userId" : "{{ profile.id }}",
+                "field" : $(this).parent().attr('id'),
+                "newValue" : $(this).siblings('input').val()
+            }, function(data, status){ //execute this function on success
+                if($(button).parent().attr('id') != 'password'){
+                    update(button);
+                }//update the list item
+                alert(data); //should be changed into a flash message
+            });
+        }
+        $(this).parent().removeClass("edit");
+        $(this).html("Edit");
+        $(this).attr("type", "button");
+    }
+</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+<h1>User {{ profile.id }} Profile</h1>
+<figure>
+    <img 
+    {% if profile.photo %}
+    src="/files/profile/{{ profile.id }}"
+    {% else %}
+    src="/images/no_photo.png"
+    {% endif %} alt="photo of {{ profile.firstName }} {{ profile.lastName }} " height="500px" />
+</figure>
+<ul id="editableList" class="list-group list-group-flush container">
+    <li class="list-group-item"><label class="col-3">Role: </label><span class="col-3">{{ profile.role }}</span></li>
+    <li id="firstName" class="list-group-item"><label class="col-3" for="">First Name: </label><span class="col-3">{{ profile.firstName }}</span></li>
+    <li id="lastName" class="list-group-item"><label class="col-3" for="">Last Name: </label><span class="col-3">{{ profile.lastName }}</span></li>
+    <li id="email" class="list-group-item"><label class="col-3" for="">Email: </label><span class="col-3">{{ profile.email }}</span></li>
+    <li id="password" class="list-group-item"><label class="col-3" for="">Password: </label><span class="col-3">***** </span><input type="text" class="col-3" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="address" class="list-group-item"><label class="col-3" for="">Address: </label><span class="col-3">{{ profile.address }}</span><input type="text" class="col-3" value="{{ profile.address }}" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="phone" class="list-group-item"><label class="col-3" for="">Phone number: </label><span class="col-3">{{ profile.phone|raw }}</span><input type="tel" class="col-3" pattern="\d{3}-\d{3}-\d{4}" value="{{ profile.phone|raw }}" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="dateOfBirth" class="list-group-item"><label class="col-3" for="">Date of Birth: </label><span class="col-3">{{ profile.dateOfBirth }}</span></li>
+    <li id="doctorLicense" class="list-group-item"><label class="col-3" for="">License #: </label><span>{{ profile.doctorLicense }}</span></li>
+</ul>
+{% endblock content %}
+{% block footer %}{% endblock footer %}

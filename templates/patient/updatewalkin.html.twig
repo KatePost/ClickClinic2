@@ -1,0 +1,243 @@
+{% extends "patient/master.html.twig" %}
+{% block title %}Patient Account Info
+{% endblock title %}
+{% block addHead %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+        var currId = 0;
+        var fileIdVal = 0;
+        $(document).ready(function () {
+                    refreshWalkin();
+
+        			$("#reset").click(function () {
+					refreshWalkin();
+            	    });
+                    $("#accordionButton").click(function () {
+					refreshWalkin();
+            	    });
+
+
+                $("#cancel").click(function() {
+                 // just to make sure we're not deleting during add
+				if (currId == 0) return; // just to make sure we're not deleting during add
+                if (!confirm("Are you sure you want to cancel this appointment?")) return;
+
+                $.ajax({
+                    url: '/patient/updatewalkin/api/' + currId,
+                    type: 'DELETE',
+                    dataType: 'json'
+                }).done(function(result) {
+                    refreshWalkin();
+                    currId = 0;
+                    fileId = 0;
+					var success = '<div class="alert alert-success" role="alert">Your walkin has been cancelled.</div>';
+                    $('#errors').html(success);
+
+                });
+				
+            	});
+
+                $("#update").click(function() {
+				if (currId == 0) return;
+
+                var apptTypeVal = $("select[name=appointmentType]").val();
+                var reasonVal = $("#reason").val();
+                var typeVal = $("select[name=type]").val();
+				var fileDescriptionVal = $("input[name=fileDescription]").val();
+                // TODO: verfiy values in the client first (maybe)
+                var itemObj = { appointmentType: apptTypeVal, description: reasonVal, type: typeVal, fileDescription : fileDescriptionVal, fileId : fileId};
+                var jsonString = JSON.stringify(itemObj);
+                $.ajax({
+                    url: '/patient/updatewalkin/api/' + currId,
+                    type: 'PATCH',
+                    data: jsonString,
+                    dataType: 'json'
+                }).done(function(result) {
+					if(result == true){
+						refreshWalkin();
+						currId = 0;
+						fileIdVal = 0;
+						// $("#expectedTime").html("");
+						// $("select[name=appointmentType]").val("");
+                		// $("#reason").val("");
+                		// $("select[name=type]").val("");
+						// $("input[name=fileDescription]").val("");
+						var success = '<div class="alert alert-success" role="alert">Your appointment information has been updated.</div>';
+						$('#errors').html(success);
+					} else {
+							
+							var error = '<div">'
+							for (let i = 0; i < result.length; i++) {
+								error += '<li class="list-group-item list-group-item-danger">' + result[i] + '</li>';
+							}
+							error += "</div>";
+							$('#errors').html(error);
+							$('#errors').show();
+					}
+
+                });
+				
+            });
+        });
+
+    	function  refreshWalkin() {
+            $('#errors').html("");
+            $.ajax({
+                url: '/patient/updatewalkin/api',
+                type: 'GET',
+                dataType: 'json'
+            }).done(function (walkin) {
+
+                if(walkin){
+
+                    currId = walkin.id;
+                    fileId = walkin.fileId;
+                    
+                $("#walkinContainer").show();
+                 $("#noWalkin").hide();
+                var tbody = '<thead><tr><th>Date</th>'
+					+ '<th>Appointment Type</th>'
+					+ '<th>Description</th>'
+                    + '<th>Type</th>'
+					+ '<th>Status</th>'
+					+ '<th>File Description</th>'
+					+ '<th>File Name</th>'
+					+ '<th>File</th><tr></thead>';
+				
+                    tbody += '<tr>';
+                    tbody += '<td>' + walkin.date + '</td>';
+                    tbody += '<td>' + walkin.appointmentType + '</td>';
+					tbody += '<td>' + walkin.description + '</td>';
+					tbody += '<td>' + walkin.type + '</td>';
+					tbody += '<td>' + walkin.activeStatus + '</td>';
+					if(walkin.fileName == null){
+						tbody += '<td>NA</td>';
+						tbody += '<td>NA</td>';
+						tbody += '<td>NA</td>';
+						tbody += '<td><a href="/patient/uploadwalkinfile/' + walkin.id + '" class="btn btn-primary">Upload File</a></td>';
+					} else {
+					tbody += '<td>' + walkin.fileDescription + '</td>';
+					tbody += '<td>' + walkin.fileName + '</td>';
+					tbody += '<td><a  href="' + walkin.file + '">';
+						if(walkin.fileName.endsWith('pdf')){
+							tbody += '<img src="/images/pdf17.png" width="150"/>';
+						} else {
+							tbody += '<img src="' + walkin.file + '" width="150"/>';
+						}
+							tbody += '</a></td>';
+							tbody += '<td><a href="/patient/deletefile/' + walkin.fileId + '" class="btn btn-secondary">Delete File</a></td>';
+					}
+					tbody += '</tr>';
+                
+                $("#listTable").html(tbody);
+				$("select[name=appointmentType]").val(walkin.appointmentType);
+                $("#reason").val(walkin.description);
+                $("select[name=type]").val(walkin.type);
+				if (walkin.fileName == null){
+					$("#fileDescription").hide();
+				}else {
+					$("#fileDescription").show();
+				}
+				$("input[name=fileDescription]").val(walkin.fileDescription);
+                } else {
+				$("#walkinContainer").hide();
+                $("#noWalkin").show();
+				} 
+            }); 
+
+
+
+
+            
+		}
+
+
+</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+    <div class="container  bg-light p-4">
+    <h1>My Current Walkin </h1>
+    <p id="noWalkin">You have no active walkins. <a href="/patient/walkinregister">Register here</a></p>
+    <div id="errors" class="list-group"></div>
+    <div id="walkinContainer">
+        <table id="listTable" class="table table-striped table-hover" class="table table-striped"></table>
+
+    	<div class="accordion col-6" id="accordion">
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button" type="button" id="accordionButton" data-bs-toggle="collapse"
+						data-bs-target="#appointmentAccordion">
+						<h4>Update/Cancel Upcoming Walkin</h4>
+					</button>
+				</h2>
+				
+				<div id="appointmentAccordion" class="accordion-collapse collapse">
+					<div class="accordion-body">
+						
+						<div id="appointmentForm">
+							<div class="row g-3 justify-content-evenly  p-4">
+								<div class="col-6">
+									<label for="dosage" class="form-label">Appointment Category:</label>
+									<select name="appointmentType" id="appointmentType">
+										<option selected value="none">None</option>
+										<option value="checkup">checkup</option>
+										<option value="mental health">mental health</option>
+										<option value="reproductive health">reproductive health</option>
+										<option value="urgent">urgent</option>
+										<option value="follow up">follow up</option>
+										<option value="other">other</option>
+									</select>
+								</div>
+								<div class="col-6">
+									<label for="numberOfRefills" class="form-label">Type :
+									</label>
+									<select name="type" id="type">
+										<option selected value="none">None</option>
+										<option value="face to face">face to face</option>
+										<option value="virtual">virtual</option>
+									</select>
+								</div>
+							</div>
+							<div class="row g-3 justify-content-evenly  p-4">
+								<div class="">
+									<label for="instructions" class="form-label">Reason :
+									</label>
+									<textarea name="reason" id="reason" class="form-control"></textarea>
+								</div>
+							</div>
+
+							<div class="row g-3 justify-content-evenly  p-4">
+								<div class="" id="fileDescription">
+									<label for="instructions" class="form-label">File Description :
+									</label>
+									<input type="text" name="fileDescription" class="form-control">
+								</div>
+							</div>
+							<div class="row g-3 justify-content-around row-cols-auto">
+								<div class="col">
+									<input type="submit" name="update" id="update" class="btn btn-primary"
+										value="Update Info">
+								</div>
+								<div class="col">
+									<input type="submit" name="cancel" id="cancel" class="btn btn-primary"
+										value="Cancel Appointment">
+								</div>
+								<div class="col">
+									<input type="reset" name="clear" id="reset" class="btn btn-secondary"
+										value="Reset form">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        </div>
+    </div>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}

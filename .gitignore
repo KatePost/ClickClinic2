@@ -1,0 +1,8 @@
+vendor
+tmplcache
+logs
+path
+.DS_Store
+.vscode
+sftp.json
+path

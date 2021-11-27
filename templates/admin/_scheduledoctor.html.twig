@@ -1,0 +1,24 @@
+<!-- we need to take the doctors names, the date, and whether it's walk-in or appointment -->
+    <form class="row mb-5"  method="post" id="schedForm"  style="display: none" >
+    <h3>Schedule a doctor</h3>
+        <input type="hidden" id="schedDate" name="schedDate" />
+        <div class="row mb-3">
+            <label for="whichDoctor" class="col-form-label col">Select a doctor</label>
+            <div class="col">
+                <select name="whichDoctor" id="whichDoctor" class="form-select"></select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="schedType" class="col-form-label col">Schedule Type</label>
+            <div class="col">
+                <select name="schedType" id="schedType" class="form-select">
+                    <option value="WALK-IN">Walk-in</option>
+                    <option value="APPOINTMENTS">Appointments</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" id="addSched" class="btn btn-primary col-auto">Schedule</button>
+        </div>
+    </form>
+    

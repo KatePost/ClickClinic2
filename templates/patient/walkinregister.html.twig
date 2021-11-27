@@ -1,0 +1,85 @@
+{% extends "patient/master.html.twig" %}
+{% block title %}Walk-In Registration
+{% endblock title %}
+{% block addHead %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+	 $(document).ready(function () {
+		 document.getElementById("today").innerHTML = new Date().toDateString();
+
+	 });
+
+</script>
+
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+
+
+
+<div class="container  bg-light p-4">
+	<h1>Register for Today's Walk-In Clinic: <span id="today"></span></h1>
+	{% if errorList %}
+		<ul>
+			{% for error in errorList %}
+				<li class="alert alert-danger" role="alert" style="list-style: none;">{{ error }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+	<form method="POST" enctype="multipart/form-data">
+		<table>
+			<tr>
+				<th>Appointment Type :</th>
+				<td>
+					<select name="appointmentType" id="appointmentType" class="form-select">
+						<option value="checkup">checkup</option>
+						<option value="mental health">mental health</option>
+						<option value="reproductive health">reproductive health</option>
+						<option value="urgent">urgent</option>
+						<option value="follow up">follow up</option>
+						<option value="other">other</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>Reason :</th>
+				<td>
+					<textarea class="form-control" name="reason">{{ v.reason}}</textarea>
+				</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<th>Type :</th>
+				<td>
+					<select name="type" id="type" class="form-select">
+						<option value="face to face">face to face</option>
+						<option value="virtual">virtual</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+			</tr>
+			<tr>
+        		<td>*File Upload Optional. Only pdf, jpg, and png files under 3MBs accepted.</td>
+    		</tr>
+			<tr>
+				<th>Select a file : </th>
+				<td>
+					<input class="form-control" type="file" name="file"/>
+				</td>
+			</tr>
+			<tr>
+				<th>Please provide a brief description of the uploaded file :</th>
+				<td>
+					<input class="form-control" name="fileDescription" type="text" value={{ v.fileDescription}} >
+				</td>
+			</tr>
+		</table>
+		<button type="submit" class="btn btn-primary"> Register</button>
+	</form>
+	<div>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}

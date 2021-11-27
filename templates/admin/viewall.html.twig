@@ -1,0 +1,81 @@
+{% extends "admin/master.html.twig" %}
+{% block title %}All Profiles{% endblock title %}
+{% block addHead %}
+<style>
+    tr.clickable{
+        cursor: pointer;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        $('select').change(function(){
+            console.log(this)
+            $('#resultsContainer').load('/admin/filtersort/' + $('#selectRole').val() + '/' + $('#selectSort').val() + ' #resultsTable');
+        });
+    });
+</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+<h1>All Users</h1>
+<div class="row">
+    <div class="col-auto text-end"><label for="selectRole">Filter by User Type:</label></div>
+    <div class="col">
+        <select name="selectRole" id="selectRole" class="form-select" >
+            <option selected value="all">All</option>
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+            <option value="admin">Administrator</option>
+        </select>
+    </div>
+    <div class="col-auto"><label for"selectSort">Sort by:</label></div>
+    <div class="col">
+        <select name="selectSort" id="selectSort" class="form-select">
+            <option selected value="id">ID</option>
+            <option value="role">User Type</option>
+            <option value="firstName">First Name</option>
+            <option value="lastName">Last Name</option>
+            <option value="email">Email Address</option>
+        </select>
+    </div>
+</div>
+<div class="table-responsive" id="resultsContainer">
+    <table class="table table-hover" id="resultsTable">
+        <thead>
+            <th>Photo</th>
+            <th>User ID</th>
+            <th>Role</th>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Email Address</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Date of Birth</th>
+            <th class="doctor">License #</th>
+            <th class="patient">Health Card Number</th>
+            <th class="patient">Primary practitioner</th>
+        </thead>
+        {% for user in userList %}
+        <!--this inline javascript and css will have to be fixed -->
+        <tr class = "clickable" onclick="window.location='modifyprofile/{{user['p.id']}}'">
+            <td>
+                <img src="{{ user['p.photo'] }}" width="100px"/>
+            </td>
+            <td>{{ user['p.id'] }}</td>
+            <td>{{ user['p.role'] }}</td>
+            <td>{{ user['p.lastName'] }}</td>
+            <td>{{ user['p.firstName'] }}</td>
+            <td>{{ user['p.email'] }}</td>
+            <td>{{ user['p.address'] }}</td>
+            <td>{{ user['p.phone']|raw }}</td>
+            <td>{{ user['p.dateOfBirth'] }}</td>
+            <td class="doctor">{{ user['p.doctorLicense'] }}</td>
+            <td class="patient">{{ user['p.healthCardNo'] }}</td>
+            <td class="patient"><a href="/admin/modifyprofile/{{ user['p.familyDoctorId'] }}">{{ user['d.firstName'] }} {{ user['d.lastName'] }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}

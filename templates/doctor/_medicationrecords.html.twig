@@ -1,0 +1,19 @@
+{% if medications %}
+    <table
+        class="table table-striped">
+        <tr>
+            <th>Prescribed Date:</th>
+            <th>Medication Name:</th>
+            <th>Instructions:</th>
+        </tr>
+        {% for row in medications %}
+            <tr>
+                <td>{{row.prescribedOn}}</td>
+                <td>{{row.medicationName}}</td>
+                <td>{{row.instructions}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>This patient has no previous appointments</p>
+{% endif %}

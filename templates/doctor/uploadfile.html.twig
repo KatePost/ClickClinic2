@@ -1,0 +1,54 @@
+{% extends "/doctor/master.html.twig" %}
+{% block title %}Upload a file
+{% endblock title %}
+{% block addHead %}{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+	<div class="container p-3 bg-light">
+		<div class="p-3">
+			<h3 class="text-center">Upload a file for
+				{{patient.lastName}},
+				{{patient.firstName}}</h3>
+		</div>
+		{% if errors %}
+			<div class="row justify-content-center">
+				<ul class="list-group col-6 p-2">
+					{% for e in errors %}
+						<li class="list-group-item list-group-item-danger">{{e}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+		<form enctype="multipart/form-data" method="post">
+		<div class="row g-3 justify-content-evenly p-4">
+		<div class="col-10">
+			<label for="doctorsNotes">Doctor's Notes
+			</label>
+			<textarea name="doctorsNotes" class="form-control">{{ form.doctorsNotes }}</textarea>
+			</div>
+			</div>
+			<div class="row g-3 justify-content-evenly p-4">
+				<div class="col-5">
+					<label for="description" class="form-label">A brief description of the uploaded file
+					</label>
+					<input name="description" type="text" value="{{ form.description }}" class="form-control">
+				</div>
+				<div class="col-5">
+					<label for="file" class="form-label">Upload a file
+					</label>
+					<input type="file" value="Upload a file" class="form-control col-4" name="file">
+				</div>
+			</div>
+			<div class="row g-3  row-cols-auto">
+				<div class="col-5 align-self-start">
+					<input type="submit" name="referralSubmit" class="btn btn-primary" value="Upload file">
+					<input type="reset" name="referralReset" class="btn btn-secondary" value="Reset form">
+				
+				</div>
+				
+			</div>
+
+		</form>
+	</div>
+{% endblock content %}
+{% block footer %}{% endblock footer %}

@@ -1,0 +1,28 @@
+{% extends "/doctor/queuetemplate.html.twig" %}
+{% block cardHead %}Queued since 
+	{% if row.date == 'today'%}
+		today
+	{% else %}
+		{{row.date}}
+	{% endif %}
+    at {{row.time}}
+{% endblock cardHead %}
+{% block cardTitle %}Walk-In Patient: 
+	{{row.lastName}},
+	{{row.firstName}}
+{% endblock cardTitle %}
+{% block subtitle %}
+	{{row.type}}
+{% endblock subtitle %}
+{% block cardText %}
+	{{row.description}}
+{% endblock cardText %}
+{% block button1 %}
+	<a id="button{{row.walkinId}}" href="/doctor/walkinform/{{row.ptId}}/{{row.walkinId}}" class="btn btn-primary">{{row.activeStatus == 'in progress' ? 'Resume Appointment' : 'Begin Appointment'}}</a>
+{% endblock button1 %}
+{% block button2 %}
+	<a href="/doctor/patientfile/{{row.ptId}}" class="btn btn-secondary">View Patient File</a>
+{% endblock button2 %}
+{% block noCards %}
+	<h4>No patients in the walk-in queue</h4>
+{% endblock noCards %}

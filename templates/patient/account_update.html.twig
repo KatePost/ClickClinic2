@@ -1,0 +1,81 @@
+{% extends "patient/master.html.twig" %}
+{% block title %}Patient Account Info
+{% endblock title %}
+{% block addHead %}{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+    <div class="container  bg-light p-4">
+
+	<h1>Your Account Info</h1>
+
+    	{% if errorList %}
+		<ul>
+			{% for error in errorList %}
+				<li class="alert alert-danger" role="alert" style="list-style: none;">{{ error }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+<figure>
+    <img 
+    {% if p.photo %}
+    src="../../../files/profile/{{ p.id }}"
+    {% else %}
+    src="../../../images/no_photo.png"
+    {% endif %} alt="photo of {{ p.firstName }} {{ p.lastName }} " height="500px" />
+</figure>
+
+
+<form method="POST" enctype="multipart/form-data">
+<table>
+    <tr>
+        <th>Name:</th>
+        <td>{{p.firstName}} {{p.lastName}}</td>
+    </tr>
+    <tr>
+        <th>Health Card Number:</th>
+        <td>{{p.healthCardNo}}</td>
+    </tr>
+    <tr>
+        <th>D.O.B.:</th>
+        <td>{{p.dateOfBirth}}</td>
+    </tr>
+    <tr>
+        <th>Family Doctor:</th>
+        {% if p.familyDoctorId != null %}
+            <td>Dr. {{p.doctorFirstName}} {{p.doctorLastName}}</td>
+        {% else %}
+            <td>Not available</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <th>Home Address:</th>
+        <td><input type="text" id="address" name="address" value="{{p.address}}"/></td>
+    </tr>
+    <tr>
+        <th>Telephone Number:</th>
+        <td><input type="tel" id="phone" name="phone" value="{{p.phone}}"/></td>
+    </tr>
+    <tr>
+        <th>Email:</th>
+        <td><input type="text" id="email" name="email" value="{{p.email}}"/></td>
+    </tr>
+    <tr>
+        <td>*Only provide a password if you are changing it.</td>
+    </tr>
+
+    <tr>
+        <th>Password:</th>
+        <td><input type="password" id="pass1" name="pass1" /></td>
+    </tr>
+    <tr>
+        <th>Confirm Password:</th>
+        <td><input type="password" id="pass2" name="pass2" /></td>
+    </tr>
+</table>
+<button type="submit" class="btn btn-primary">Update Info</button>
+</form>
+</div>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}

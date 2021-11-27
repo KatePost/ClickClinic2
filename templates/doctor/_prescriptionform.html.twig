@@ -1,0 +1,41 @@
+<form method="post">
+			<div class="row g-3 justify-content-evenly p-4">
+				<div class="col-md-4">
+					<label for="medicationName" class="form-label">Medication :
+					</label>
+					<input type="text" name="medicationName" class="form-control" value={{values.medicationName}}>
+				</div>
+				<div class="col-md-3">
+					<label for="prescribedOn" class="form-label">Prescribed date :
+					</label>
+					<input name="prescribedOn" class="form-control" type="date" value={{values.prescribedOn}}>
+				</div>
+			</div>
+			<div class="row g-3 justify-content-evenly  p-4">
+				<div class="col-md-4">
+					<label for="dosage" class="form-label">Dosage :
+					</label>
+					<input type="text" name="dosage" class="form-control" value={{values.dosage}}>
+				</div>
+				<div class="col-md-3">
+					<label for="numberOfRefills" class="form-label">Number of refills :
+					</label>
+					<input type="number" name="numberOfRefills" class="form-control" value={{values.numberOfRefills}}>
+				</div>
+			</div>
+			<div class="row g-3 justify-content-evenly  p-4">
+				<div class="col-md-9">
+					<label for="instructions" class="form-label">Medication instructions :
+					</label>
+					<textarea name="instructions" class="form-control">{{values.instructions}}</textarea>
+				</div>
+			</div>
+			<div class="row g-3 justify-content-evenly">
+				<div class="col-md-2">
+					<input type="submit" class="btn btn-primary">
+				</div>
+				<div class="col-md-2">
+					<input type="reset" class="btn btn-secondary">
+				</div>
+			</div>
+		</form>

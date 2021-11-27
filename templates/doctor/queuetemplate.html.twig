@@ -1,0 +1,26 @@
+{% if records %}
+	<div class="pb-4 px-4">
+		{% for row in records %}
+			<div class="card m-4">
+				<div class="card-header">
+			{% block cardHead %}
+            {% endblock cardHead %}
+				</div>
+				<div class="card-body">
+					<h5 class="card-title">{% block cardTitle %}{% endblock cardTitle %}
+					</h5>
+					<h6>
+						<i>{% block subtitle %}{% endblock subtitle %}</i>
+					</h6>
+					<p class="card-text">
+						<em>{% block cardText %}{% endblock cardText %}</em>
+					</p>
+					{% block button1 %}{% endblock button1 %}
+                    {% block button2 %}{% endblock button2 %}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% else %}
+	{% block noCards %}{% endblock noCards %}
+{% endif %}

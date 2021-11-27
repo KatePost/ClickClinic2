@@ -1,0 +1,713 @@
+Each member writes down answers to 3 questions in the following format:
+
+<< current date goes here >>
+1. What I have done / not done since last Scrum?
+2. What I plan to do from this scrum to next? (next 24 hours)
+3. Where do I need assistance? What do I need to figure out?
+
+-----
+10/27/2021
+Kate
+1. What I have done / not done since last Scrum?
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+
+3. Where do I need assistance? What do I need to figure out?
+
+
+Kim
+1. What I have done / not done since last Scrum?
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+
+3. Where do I need assistance? What do I need to figure out?
+
+
+Aly
+1. What I have done / not done since last Scrum?
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+
+3. Where do I need assistance? What do I need to figure out?
+-----
+
+10/22/2021
+Kate
+1. What I have done / not done since last Scrum?
+-?
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Look at Web RTC vs Zoom
+-Work on database structure
+-Update Apache hosts
+-Trello stories
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-?
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Work on proposal
+-Work on database structure
+-watch videos
+-Update Apache hosts
+-Trello stories
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-?
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Work on database structure
+-Update Apache hosts
+-Trello stories
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+10/23/2021
+Kate
+1. What I have done / not done since last Scrum?
+-Finished proposal
+-explored video calling
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Update Apache hosts
+-Trello stories/todos
+-Division of labor
+3. Where do I need assistance? What do I need to figure out?
+-I will need much more info on video calling
+
+Kim
+1. What I have done / not done since last Scrum?
+-finished proposal
+-database structure
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Trello stories
+-Update Apache hosts
+-Division of labor
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-Improved mockups
+-database structure
+/
+-Update Apache hosts
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Update Apache hosts
+-Trello stories/todos
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+10/25/2021
+Kate
+1. What I have done / not done since last Scrum?
+-Trello allocations
+-Apache
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Trello
+-Watch CRUD video
+-Database???
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-Trello board
+-Apache setup
+-PHP videos
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Databse?
+3. Where do I need assistance? What do I need to figure out?
+-Database?
+
+Aly
+1. What I have done / not done since last Scrum?
+-Updated Apache hosts
+-Created templates for php 
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Watch CRUD video
+-Creating database
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+10/26/2021
+Kate
+1. What I have done / not done since last Scrum?
+-upload patient file
+-patient file
+-patient search
+2. What I plan to do from this scrum to next? (next 24 hours)
+-validation
+-blobs
+-prescribe and referrals
+3. Where do I need assistance? What do I need to figure out?
+-form validation library? --"respect/validation": "^2.0"
+-search
+-blobs
+
+Kim
+1. What I have done / not done since last Scrum?
+-universal login
+-patient create account page
+-validation
+-flash messages
+2. What I plan to do from this scrum to next? (next 24 hours)
+-rearrange util functions
+-patient edit account page
+-password encryption
+3. Where do I need assistance? What do I need to figure out?
+-flash messages
+
+Aly
+1. What I have done / not done since last Scrum?
+-Admin.php
+-set up database
+-form for entering user into database
+-validation
+2. What I plan to do from this scrum to next? (next 24 hours)
+-look into validation library
+-more twig templates
+-ajax on registration to show/hide fields
+3. Where do I need assistance? What do I need to figure out?
+-blobs??
+-form validation library?
+
+10/27/2021
+Kate
+1. What I have done / not done since last Scrum?
+-non scheduling doctor templates
+-validation on those
+-started calendar 
+2. What I plan to do from this scrum to next? (next 24 hours)
+-work more on calendar
+-watch middleware video
+3. Where do I need assistance? What do I need to figure out?
+-more information on how to use full calendar
+
+Kim
+1. What I have done / not done since last Scrum?
+-rearranged util validation functions
+-finished template for patient registration/update info/view prescriptions/referrals
+-password encryption
+2. What I plan to do from this scrum to next? (next 24 hours)
+-setup template for patient view files/upload photos
+-start calendar
+3. Where do I need assistance? What do I need to figure out?
+-htaccess
+
+Aly
+1. What I have done / not done since last Scrum?
+-view all users list Admin
+-edit/view profile page for Admin
+-viewing photos!!
+/
+-validation
+2. What I plan to do from this scrum to next? (next 24 hours)
+-finish off templates
+-view all filtering
+-implement validation
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+10/28/2021
+Kate
+1. What I have done / not done since last Scrum?
+-search implementation
+-started bootstrap
+2. What I plan to do from this scrum to next? (next 24 hours)
+-bootstrap
+-doctor modify profile
+3. Where do I need assistance? What do I need to figure out?
+-recaptcha?
+
+Kim
+1. What I have done / not done since last Scrum?
+-booking form for patients incl validation
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Patients view their appointments and files
+-register to be in the walkin queue form
+3. Where do I need assistance? What do I need to figure out?
+-file validation
+
+Aly
+1. What I have done / not done since last Scrum?
+-ajax (editing user profile)
+/
+-view all filtering
+2. What I plan to do from this scrum to next? (next 24 hours)
+-better refine editing selections
+-view all filtering
+-pagination
+3. Where do I need assistance? What do I need to figure out?
+-make sure updated field updates
+
+10/29/2021
+Kate
+1. What I have done / not done since last Scrum?
+-bootstrap validation
+-twig functions
+/
+-doctor modify profile
+2. What I plan to do from this scrum to next? (next 24 hours)
+-doctor modify profile
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-Walkin registration
+-Lecture video
+-ajax patient search medication
+2. What I plan to do from this scrum to next? (next 24 hours)
+-pagination
+-walkin booking
+3. Where do I need assistance? What do I need to figure out?
+-ajax debugging
+
+Aly
+1. What I have done / not done since last Scrum?
+-validation (respect/validation)
+2. What I plan to do from this scrum to next? (next 24 hours)
+-validation
+-sorting filetering on view all
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+10/30/2021
+Kate
+1. What I have done / not done since last Scrum?
+-bootstrap forms
+2. What I plan to do from this scrum to next? (next 24 hours)
+-work on schedule templates
+3. Where do I need assistance? What do I need to figure out?
+-calendar as always
+
+Kim
+1. What I have done / not done since last Scrum?
+-walkin template
+2. What I plan to do from this scrum to next? (next 24 hours)
+-file stuff!
+3. Where do I need assistance? What do I need to figure out?
+-display files
+
+Aly
+1. What I have done / not done since last Scrum?
+-some validation
+2. What I plan to do from this scrum to next? (next 24 hours)
+-middleware
+3. Where do I need assistance? What do I need to figure out?
+-group discuss validation
+
+11/01/2021
+Kate
+1. What I have done / not done since last Scrum?
+-more doctor templates with bootstrap
+-middleware
+2. What I plan to do from this scrum to next? (next 24 hours)
+-recaptcha
+-finish up bootstrap on doctor pages
+-header??
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-file validation
+-displaying pdf logo
+-pagination
+2. What I plan to do from this scrum to next? (next 24 hours)
+-middleware
+-patients can delete files
+-template for viewing/canceling appointments
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-middleware!!
+-sorting and filtering
+-bootstrap
+2. What I plan to do from this scrum to next? (next 24 hours)
+-calendar
+-admin templates for calendar stuff
+3. Where do I need assistance? What do I need to figure out?
+-flash messages
+
+11/02/2021
+Kate
+1. What I have done / not done since last Scrum?
+-we uploaded the files to the hosts
+-worked on recaptcha
+/
+-header, more bootstrap
+2. What I plan to do from this scrum to next? (next 24 hours)
+-finish homework from last night
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-middleware for patient
+-we uploaded the files to the hosts
+-some patient account progress
+2. What I plan to do from this scrum to next? (next 24 hours)
+-work on homework from last night
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-we uploaded the files to the hosts
+-Node Js homework and api homework
+2. What I plan to do from this scrum to next? (next 24 hours)
+-finish up homework
+-get started on calendar???
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+11/04/2021
+Kate
+1. What I have done / not done since last Scrum?
+-recaptcha!
+-dynamic appointment form
+2. What I plan to do from this scrum to next? (next 24 hours)
+-Zoom api?
+-pagination
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-upcoming appointments with ajax/api's
+2. What I plan to do from this scrum to next? (next 24 hours)
+-continue working on upcoming appointments page from patient side
+-unify pages
+3. Where do I need assistance? What do I need to figure out?
+-error
+
+
+Aly
+1. What I have done / not done since last Scrum?
+-homework unrelated to project 
+2. What I plan to do from this scrum to next? (next 24 hours)
+-calendar
+-page unification
+-add delete to modify page
+3. Where do I need assistance? What do I need to figure out?
+-concerned about being behind schedule
+
+11/05/2021
+Kate
+1. What I have done / not done since last Scrum?
+-pagination video - ajax
+-bootstrapped my other forms
+-header for doctor
+2. What I plan to do from this scrum to next? (next 24 hours)
+-paginate forms
+-look into styling flash messages
+-zomm stuff
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-ajax upcoming appointments
+-error messages
+2. What I plan to do from this scrum to next? (next 24 hours)
+-upcoming appointments 
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-look into a new calendar
+/
+-page unification
+-add delete to modify page
+2. What I plan to do from this scrum to next? (next 24 hours)
+-calendar
+-modified file setup
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+11/07/2021
+Kate
+1. What I have done / not done since last Scrum?
+-doctor dashboard
+-search 
+-homework
+2. What I plan to do from this scrum to next? (next 24 hours)
+-homework
+3. Where do I need assistance? What do I need to figure out?
+-homework
+
+Kim
+1. What I have done / not done since last Scrum?
+-homepage for patient
+-upcoming appointments
+-homework
+2. What I plan to do from this scrum to next? (next 24 hours)
+-homework/study
+3. Where do I need assistance? What do I need to figure out?
+-pagination 
+
+Aly
+1. What I have done / not done since last Scrum?
+-homework
+-header
+-file display
+2. What I plan to do from this scrum to next? (next 24 hours)
+-homework/study
+3. Where do I need assistance? What do I need to figure out?
+-calendar
+
+11/09/2021
+Kate
+1. What I have done / not done since last Scrum?
+-homework
+2. What I plan to do from this scrum to next? (next 24 hours)
+- add 1 chart
+-think about walkins!!!!!!!
+3. Where do I need assistance? What do I need to figure out?
+- Does doctor get a modify profile page?? (I don't think so)
+-Cron job auto emails
+
+Kim
+1. What I have done / not done since last Scrum?
+-walkin patient queue
+-wait time ajax
+2. What I plan to do from this scrum to next? (next 24 hours)
+-bootstrap pages!
+-blob stuff
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-homework
+2. What I plan to do from this scrum to next? (next 24 hours)
+-modify profile for doctors
+3. Where do I need assistance? What do I need to figure out?
+-calendar!
+
+11/10/2021
+Kate
+1. What I have done / not done since last Scrum?
+-added chart to doctor 
+2. What I plan to do from this scrum to next? (next 24 hours)
+-walkin page
+3. Where do I need assistance? What do I need to figure out?
+-files
+
+Kim
+1. What I have done / not done since last Scrum?
+-styling
+2. What I plan to do from this scrum to next? (next 24 hours)
+-paitent landing page
+3. Where do I need assistance? What do I need to figure out?
+-files
+
+Aly
+1. What I have done / not done since last Scrum?
+-unification
+2. What I plan to do from this scrum to next? (next 24 hours)
+-modify page for doctor
+-files
+3. Where do I need assistance? What do I need to figure out?
+-calendar
+
+list of questions:
+-pagination code
+-calendar app 
+-is it okay to cascade delete in our db *in certain situations
+-cron job emails
+
+10/27/2021
+Kate
+1. What I have done / not done since last Scrum?
+-walkin page for doctors
+-dynamic dashboard
+2. What I plan to do from this scrum to next? (next 24 hours)
+-finally paginate everything
+-cron job emails
+-zooooom
+-fix dates on appointment (update to appointmentDate)
+3. Where do I need assistance? What do I need to figure out?
+-research cron job emails
+-files
+
+Kim
+1. What I have done / not done since last Scrum?
+-patient dashboard
+-update patient walkin info
+2. What I plan to do from this scrum to next? (next 24 hours)
+-register for walkin files
+-admin dashboard
+3. Where do I need assistance? What do I need to figure out?
+-files and flashes
+
+Aly
+1. What I have done / not done since last Scrum?
+-time slot array
+-calendar started
+-files
+-modify page for doctor
+2. What I plan to do from this scrum to next? (next 24 hours)
+-calendar
+-files on doctor pages
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+11/12/2021
+Kate
+1. What I have done / not done since last Scrum?
+-pagination with ajax
+-emails working (without schedule)
+-time bugs fixed
+2. What I plan to do from this scrum to next? (next 24 hours)
+-cron jobs (with Gregory help)
+-view all referrals/medication
+3. Where do I need assistance? What do I need to figure out?
+-cron job
+
+Kim
+1. What I have done / not done since last Scrum?
+-validation
+-walkin stuff for admin
+-flash message updates
+-started charts
+2. What I plan to do from this scrum to next? (next 24 hours)
+-charts for admin
+-paginate
+3. Where do I need assistance? What do I need to figure out?
+-upload file through ajax
+
+Aly
+1. What I have done / not done since last Scrum?
+-continued work on calendar
+-file dislay for doctor
+2. What I plan to do from this scrum to next? (next 24 hours)
+-calendar
+3. Where do I need assistance? What do I need to figure out?
+-bug hunting
+
+11/13/2021
+Kate
+1. What I have done / not done since last Scrum?
+-cron job emails
+-referrals and medications
+-login and register
+2. What I plan to do from this scrum to next? (next 24 hours)
+-paginate some old stuff
+-look into bootstrap footer
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-admin dashboard charts
+-creating a capacity for walkin clinic
+-bootstrap forms
+2. What I plan to do from this scrum to next? (next 24 hours)
+-fix some chart issues
+-paginating
+3. Where do I need assistance? What do I need to figure out?
+-chart issue maybe?
+
+Aly
+1. What I have done / not done since last Scrum?
+-calendar
+-doctor schedule page
+2. What I plan to do from this scrum to next? (next 24 hours)
+-appointments calendar 
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+11/14/2021
+Kate
+1. What I have done / not done since last Scrum?
+-Zoom api
+-brainstormed power point
+2. What I plan to do from this scrum to next? (next 24 hours)
+-powerpoint
+-finishing touches
+-testing
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Kim
+1. What I have done / not done since last Scrum?
+-pagination
+-finished chart formatting
+-patients can upload and delete files
+2. What I plan to do from this scrum to next? (next 24 hours)
+-testing
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-calendar
+2. What I plan to do from this scrum to next? (next 24 hours)
+-delete functionality
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+11/15/2021
+Kate
+1. What I have done / not done since last Scrum?
+- testing and data creation
+-view all patients
+- zoom links
+-presentation started
+2. What I plan to do from this scrum to next? (next 24 hours)
+-power point and rehearsal
+3. Where do I need assistance? What do I need to figure out?
+-cron cancel
+
+Kim
+1. What I have done / not done since last Scrum?
+-testing
+-fixing bugs
+-chart formatting
+2. What I plan to do from this scrum to next? (next 24 hours)
+-power point and rehearsal
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+Aly
+1. What I have done / not done since last Scrum?
+-schedule delete
+-debugging
+2. What I plan to do from this scrum to next? (next 24 hours)
+-power point and rehearsal
+3. Where do I need assistance? What do I need to figure out?
+-?
+
+11/16/2021
+Kate
+1. What I have done / not done since last Scrum?
+-presentation
+2. What I plan to do from this scrum to next? (next 24 hours)
+-database configure
+3. Where do I need assistance? What do I need to figure out?
+-!
+
+Kim
+1. What I have done / not done since last Scrum?
+-presentation
+-ppagination error
+2. What I plan to do from this scrum to next? (next 24 hours)
+-database configure
+3. Where do I need assistance? What do I need to figure out?
+-!
+
+Aly
+1. What I have done / not done since last Scrum?
+-presentation
+2. What I plan to do from this scrum to next? (next 24 hours)
+-database configure
+3. Where do I need assistance? What do I need to figure out?
+-!

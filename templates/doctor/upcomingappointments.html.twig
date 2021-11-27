@@ -1,0 +1,11 @@
+{% extends "doctor/master.html.twig" %}
+{% block title %}Upcoming Appointments
+{% endblock title %}
+{% block addHead %}{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+	<div class="container  bg-light p-4">
+		<h3>Upcoming Appointments</h3>
+		{{ include('/doctor/_upcomingappointment.html.twig') }}
+</div>
+{% endblock content %}{% block footer %}{% endblock footer %}

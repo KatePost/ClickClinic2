@@ -1,0 +1,389 @@
+{% extends "doctor/master.html.twig" %}
+{% block title %}Appointment
+{% endblock title %}
+{% block addHead %}{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+	<script>
+		$(document).ajaxError(function () { // alert("AJAX error");
+});
+
+$(document).ready(function () {
+$('#appointmentStarted').hide();
+if ('{{ currentAppointment.status }}' == 'in progress') {
+$('#appointmentStarted').show();
+$('#zoomLink').show();
+$('#startAppt').html("Appointment in Progress");
+$('#startAppt').prop('disabled', true);
+}
+if ('{{ currentAppointment.status }}' == 'completed') {
+$('#appointmentStarted').hide();
+$('#startAppt').html("Appointment Completed");
+$('#startAppt').prop('disabled', true);
+}
+if ('{{ currentAppointment.status }}' == 'upcoming') {
+$('#zoomLink').hide();
+$('#appointmentStarted').hide();
+}
+
+function httpErrorHandler(jqxhr, status, errorThrown) {
+if (jqxhr.status == 400) {
+$('#notesErrors').html('<li class="list-group-item list-group-item-danger">' + jqxhr.responseText);
+// $('#notesText').addClass(is - invalid);
+} else if (jqxhr.status == 403) { // authentication failed
+$("input[name=username]").val("");
+$("input[name=password]").val("");
+$("#mainAppPane").hide();
+$("#authPane").show();
+alert("Authentication failed");
+} else { // other error - inform the user
+alert("AJAX error: " + jqxhr.responseText + ", status: " + jqxhr.status);
+}
+}
+
+$('#startAppt').click(function () {
+	$('#zoomLink').show();
+$('#startAppt').html("Appointment in Progress");
+let statusVal = 'in progress';
+let dataObj = {
+status: statusVal
+}
+let dataJson = JSON.stringify(dataObj);
+$.ajax({
+url: '/doctor/appointmentform/' + {{ currentAppointment.id }} + '/start',
+type: 'POST',
+dataType: 'json',
+data: dataJson,
+error: function (jqxhr, status, errorThrown) {
+httpErrorHandler(jqxhr, status, errorThrown);
+}
+}).always(function (result) {
+if (result === true) {
+$('#appointmentStarted').show();
+$('#startAppt').prop('disabled', true);
+}
+});
+});
+
+$('#submitNotes').click(function () {
+let notesVal = tinymce.get("notesText").getContent();
+var doctorsNotesJson = JSON.stringify({doctorsNotes: notesVal});
+console.log(doctorsNotesJson);
+$.ajax({
+url: '/doctor/appointmentform/' + {{ currentAppointment.id }},
+type: 'POST',
+dataType: 'json',
+data: doctorsNotesJson,
+error: function (jqxhr, status, errorThrown) {
+httpErrorHandler(jqxhr, status, errorThrown);
+}
+}).done(function (result) {
+if (result === true) {
+window.location.href = "/doctor/patientfile/" + {{ patient.id }};
+}
+});
+});
+
+$("#prescriptionForm").submit(function (event) {
+event.preventDefault();
+var medicationNameVal = $("input[name=medicationName]").val();
+var prescribedOnVal = $("input[name=prescribedOn]").val();
+var dosageVal = $("input[name=dosage]").val();
+var numberOfRefillsVal = $("input[name=numberOfRefills]").val();
+var instructionsVal = $("textarea[name=instructions]").val();
+var prescriptionObj = {
+medicationName: medicationNameVal,
+prescribedOn: prescribedOnVal,
+dosage: dosageVal,
+numberOfRefills: numberOfRefillsVal,
+instructions: instructionsVal
+};
+var jsonString = JSON.stringify(prescriptionObj);
+console.log(jsonString);
+$.ajax({
+url: '/doctor/appointmentprescription/' + {{ patient.id }},
+type: 'POST',
+data: jsonString,
+dataType: 'json',
+error: function (jqxhr, status, errorThrown) {
+httpErrorHandler(jqxhr, status, errorThrown);
+}
+}).done(function (value) {
+if (value !== true) {
+var error = "<ul>"
+for (let i = 0; i < value.length; i++) {
+error += '<li class="list-group-item list-group-item-danger">' + value[i] + '</li>';
+}
+error += "</ul>";
+$('#prescriptionErrors').html(error);
+} else {
+var success = '<div class="alert alert-success" role="alert">A new prescription has been created.</div>';
+$('#prescriptionErrors').html(success);
+$('#prescriptionForm').trigger("reset");
+}
+})
+});
+
+
+$("#referralForm").submit(function (event) {
+event.preventDefault();
+var specialistFieldVal = $("input[name=specialistField]").val();
+var dateReferredVal = $("input[name=dateReferred]").val();
+var priorityVal = $("input[name=priority]").val();
+var referralObj = {
+specialistField: specialistFieldVal,
+dateReferred: dateReferredVal,
+priority: priorityVal
+};
+var jsonString = JSON.stringify(referralObj);
+console.log(jsonString);
+$.ajax({
+url: '/doctor/appointmentreferral/' + {{ patient.id }},
+type: 'POST',
+data: jsonString,
+dataType: 'json',
+error: function (jqxhr, status, errorThrown) {
+httpErrorHandler(jqxhr, status, errorThrown);
+}
+}).done(function (value) {
+if (value !== "true") {
+var error = "<ul>"
+for (let i = 0; i < value.length; i++) {
+error += '<li class="list-group-item list-group-item-danger">' + value[i] + '</li>';
+}
+error += "</ul>";
+$('#referralErrors').html(error);
+} else {
+var success = '<div class="alert alert-success" role="alert">A new referral has been created.</div>';
+$('#referralErrors').html(success);
+$('#referralForm').trigger("reset");
+}
+})
+});
+
+});
+	</script>
+	<div id="mainProfile" class="container  bg-light">
+		<div id="ptInfo">
+			<div>
+				<h3 class="text-center">Appointment with :
+					{{patient.lastName}},
+					{{patient.firstName}}</h3>
+			</div>
+			<div class="row justify-content-center p-5">
+				<div class="col">
+					<div class="card mb-3" style="max-width: 540px;">
+						<div class="row g-0">
+							<div class="col-md-4">
+							{% if patient.photo != null %} 
+								<img src="{{patient.photo}}" class="img-fluid rounded-start" width="200px">
+								{% else %}
+								<img src="/images/no_photo.png" class="img-fluid rounded-start" width="200px">
+								{% endif %}
+							</div>
+							<div class="col-md-8">
+								<div class="card-body">
+									<h4 class="card-title text-center">Patient Information</h4>
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item">Date of Birth:
+											{{patient.dateOfBirth}}</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="col">
+					<div class="card mb-3" style="max-width: 540px;">
+						<div class="card-body">
+							<h4 class="card-title text-center">Appointment Information</h4>
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item">
+									<strong>Description:</strong>
+									{{currentAppointment.description}}
+								</li>
+								<li class="list-group-item">
+									<strong>Type:</strong>
+									{{currentAppointment.type}}
+								</li>
+								<li class="list-group-item">
+									<strong>Expected Time:</strong>
+									{{currentAppointment.time}}
+								</li>
+								<li class="list-group-item">
+									<strong>Appointment Type:</strong>
+									{{currentAppointment.appointmentType}}
+								</li>
+								{% if zoomLink %}
+								<li class="list-group-item" id="zoomLink">
+									<strong>Zoom Link:</strong>
+									<a href="{{zoomLink.start_url}}" type="button" class="btn btn-primary m-4">Start Zoom Call</a>
+								</li>
+								{% endif %}
+							</ul>
+							<button id="startAppt" type="button" class="btn btn-primary m-4">Start Appointment</button>
+							<a href="/doctor/patientfile/{{currentAppointment.patientId}}" id="startAppt" type="button" class="btn btn-secondary m-4">Patient File</a>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="apptRecord" class="col">
+				<h4>Previous Appointment Records</h4>
+				 {% include("/doctor/_previousappointments.html.twig") %}
+			</div>
+			</div>
+			<div class="row">
+			<div id="medRecord" class="col">
+				<h4>Medications Records</h4>
+				{% if medications %}
+					<table
+						class="table table-striped">
+						<tr>
+							<th>Prescribed Date:</th>
+							<th>Medication Name:</th>
+							<th>Instructions:</th>
+						</tr>
+						{% for row in medications %}
+							<tr>
+								<td>{{row.prescribedOn}}</td>
+								<td>{{row.medicationName}}</td>
+								<td>{{row.instructions}}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				{% else %}
+					<p>This patient has no previous appointments</p>
+				{% endif %}
+			</div>
+		</div>
+		<div id="appointmentStarted">
+			<div class="p-4 ">
+				<h4>
+					<label>Appointment Notes</label>
+				</h4>
+				<div id="notesErrors" class="list-group"></div>
+				<textarea name="doctorsNotes" id="notesText" class="form-control"></textarea>
+			</div>
+			<div class="row p-4">
+				<div class="accordion col-6">
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#prescriptionAccordion">
+								<h4>Create prescription</h4>
+							</button>
+						</h2>
+						<div id="prescriptionAccordion" class="accordion-collapse collapse">
+							<div class="accordion-body">
+								<div id="prescriptionErrors" class="list-group"></div>
+								<form method="post" id="prescriptionForm">
+									<div class="row g-3 justify-content-evenly p-4">
+										<div class="col-6">
+											<label for="medicationName" class="form-label">Medication :
+											</label>
+											<input type="text" name="medicationName" class="form-control" {% if values.medicationName %} value={{values.medicationName}} {% endif %}>
+										</div>
+										<div class="col-6">
+											<label for="prescribedOn" class="form-label">Prescribed date :
+											</label>
+											<input name="prescribedOn" class="form-control" type="date" {% if values.prescribedOn %} value={{values.prescribedOn}} {% endif %}>
+										</div>
+									</div>
+									<div class="row g-3 justify-content-evenly  p-4">
+										<div class="col-6">
+											<label for="dosage" class="form-label">Dosage :
+											</label>
+											<input type="text" name="dosage" class="form-control" {% if values.dosage %} value={{values.dosage}} {% endif %}>
+										</div>
+										<div class="col-6">
+											<label for="numberOfRefills" class="form-label">Number of refills :
+											</label>
+											<input type="number" name="numberOfRefills" class="form-control" {% if values.numberOfRefills %} value={{values.numberOfRefills}} {% else %} value="0" {% endif %}>
+										</div>
+									</div>
+									<div class="row g-3 justify-content-evenly  p-4">
+										<div class="">
+											<label for="instructions" class="form-label">Medication instructions :
+											</label>
+											<textarea name="instructions" class="form-control">{% if values.instructions %}{{values.instructions}}{% endif %}</textarea>
+										</div>
+									</div>
+									<div class="row g-3 justify-content-around row-cols-auto">
+										<div class="col">
+											<input type="submit" name="prescriptionSubmit" class="btn btn-primary" value="Create prescription">
+										</div>
+										<div class="col">
+											<input type="reset" name="prescriptionReset" class="btn btn-secondary" value="Reset form">
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="accordion col-6">
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#referralAccordion">
+								<h4>Create referral</h4>
+							</button>
+						</h2>
+						<div id="referralAccordion" class="accordion-collapse collapse">
+							<div class="accordion-body">
+								<div id="referralErrors" class="list-group"></div>
+								<form method="post" id="referralForm">
+									<div class="row g-3 justify-content-evenly p-4">
+										<div class="col-4">
+											<label for="specialistField" class="form-label">Specialization :
+											</label>
+											<input type="text" name="specialistField" class="form-control" value={{values.specialistField}}>
+										</div>
+										<div class="col-4">
+											<label for="dateReferred" class="form-label">Date referred :
+											</label>
+											<input name="dateReferred" type="date" class="form-control" value={{values.dateReferred}}>
+										</div>
+										<div class="col-4">
+											<label for="priority" class="form-label">Referral priority :
+											</label>
+											<select name="priority" class="form-select">
+												<option class="form-control" value="NON URGENT">Not urgent</option>
+												<option class="form-control" value="SEMI URGENT">Moderately urgent</option>
+												<option class="form-control" value="URGENT">Urgent</option>
+											</select>
+										</div>
+									</div>
+									<div class="row g-3 justify-content-around row-cols-auto">
+										<div class="col">
+											<input type="submit" name="referralSubmit" class="btn btn-primary" value="Create referral">
+										</div>
+										<div class="col">
+											<input type="reset" name="referralReset" class="btn btn-secondary" value="Reset form">
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<button id="submitNotes" type="button" class="btn btn-primary m-4">End appointment</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.tiny.cloud/1/cehbsmux93p83kzn8i5ypr9ghufj8609j6ynaddo7c228y27/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+	<script>
+		tinymce.init({selector: 'textarea[name=doctorsNotes]'});
+	</script>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}

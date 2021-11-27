@@ -1,0 +1,119 @@
+{% extends "admin/master.html.twig" %}
+{% block title %}User Profile{% endblock title %}
+{% block addHead %}
+<style>
+#editableList li input{
+    display: none;
+}
+#editableList li.edit span{
+    display: none;
+}
+#editableList li.edit input {
+    display: initial;
+}
+button{
+    float: right;
+}
+</style>
+<script async defer>
+    $(document).ready(function(){
+        $("li").on("click", "button[type='button']", editField);
+        $("li").on("click", "button[type='submit']", saveField);
+        $("li").on("change", "select", function(){
+            $(this).siblings('input').val($(this).val());
+        });
+    });
+    function editField(){
+        $(this).parent().addClass("edit");
+        $(this).siblings("input").removeAttr("readonly");
+        $(this).siblings("select").prop("disabled", false);
+        $(this).html("Submit");
+        $(this).attr("type", "submit");
+    }
+    function saveField(){
+        //check if input has been changed. 
+            console.log("existing value: " + $(this).siblings('span').html());
+            console.log("new value: " + $(this).siblings('input').val());
+            console.log("values differ: " + ($(this).siblings('span').html() != $(this).siblings('input').val()));
+        if($(this).siblings('span').html() != $(this).siblings('input').val() && $(this).siblings('input').val() ){
+            
+            let update = button => $(button).parent().load(document.location + " #" + $(button).parent().attr('id') + ">")//$(button).siblings('span').html($(button).siblings('input').val());//arrow function to update the list item when the update succeeds
+            let button = this;//variable to transfar "this" into the post
+
+            $.post("/admin/modify/formfield", { //post to this url, these values
+                "userId" : "{{ profile['p.id'] }}",
+                "field" : $(this).parent().attr('id'),
+                "newValue" : $(this).siblings('input').val()
+            }, function(data, status){ //execute this function on success
+                if($(button).parent().attr('id') != 'password'){
+                    update(button);
+                }//update the list item
+                $("#flashMessage").html("<div class='flashMessage alert alert-info m-2 text-center col-5 alert-dismissible fade show'>"+data+"<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
+            });
+        }
+        $(this).parent().removeClass("edit");
+        $(this).html("Edit");
+        $(this).attr("type", "button");
+        $(this).siblings("select").prop("disabled", true);
+
+    }
+</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+<div id="flashMessage"></div>
+<h1>User {{ profile['p.id'] }} Profile</h1>
+<figure>
+    <img 
+    {% if profile['p.photo'] %}
+    src="/files/profile/{{ profile['p.id'] }}"
+    {% else %}
+    src="/images/no_photo.png"
+    {% endif %} alt="photo of {{ profile['p.firstName'] }} {{ profile['p.lastName'] }} " height="500px" />
+</figure>
+<ul id="editableList" class="list-group list-group-flush container">
+    <li class="list-group-item"><label class="col-3">Role: </label><span class="col-3">{{ profile['p.role'] }}</span></li>
+    <li id="firstName" class="list-group-item"><label class="col-3" for="">First Name: </label><span class="col-3">{{ profile['p.firstName'] }}</span><input type="text" class="col-3" value="{{ profile['p.firstName'] }}" readonly /><button type="button" class="btn btn-primary btn-sm btn-sm">Edit</button></li>
+    <li id="lastName" class="list-group-item"><label class="col-3" for="">Last Name: </label><span class="col-3">{{ profile['p.lastName'] }}</span><input type="text" class="col-3" value="{{ profile['p.lastName'] }}" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="email" class="list-group-item"><label class="col-3" for="">Email: </label><span class="col-3">{{ profile['p.email'] }}</span><input type="email" class="col-3" value="{{ profile['p.email'] }}" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="password" class="list-group-item"><label class="col-3" for="">Password: </label><span class="col-3">***** </span><input type="text" class="col-3" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="address" class="list-group-item"><label class="col-3" for="">Address: </label><span class="col-3">{{ profile['p.address'] }}</span><input type="text" class="col-3" value="{{ profile['p.address'] }}" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="phone" class="list-group-item"><label class="col-3" for="">Phone number: </label><span class="col-3">{{ profile['p.phone']|raw }}</span><input type="tel" class="col-3" pattern="\d{3}-\d{3}-\d{4}" value="{{ profile['p.phone']|raw }}" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    <li id="dateOfBirth" class="list-group-item"><label class="col-3" for="">Date of Birth: </label><span class="col-3">{{ profile['p.dateOfBirth'] }}</span><input type="date" class="col-3" min="{{ 'now'|date_modify('-150 years')|date('Y-m-d') }}" max="{{ 'now'|date('Y-m-d') }}" value="{{ profile['p.dateOfBirth'] }}" readonly /><button type="button" class="btn btn-primary btn-sm" >Edit</button></li>
+    {% if profile['p.role'] == 'doctor' %}
+    <li id="doctorLicense" class="list-group-item"><label class="col-3" for="">License #: </label><span>{{ profile['p.doctorLicense'] }}</span><input type="text" class="col-3" value="{{ profile['p.doctorLicense'] }}" readonly /><button type="button" class="btn btn-primary btn-sm">Edit</button></li>
+    {% endif %}
+    {% if profile['p.role'] == 'patient' %}
+    <li id="healthCardNo" class="list-group-item">
+        <label class="col-3" for="">Health Card #: </label>
+        <span class="col-3">{{ profile['p.healthCardNo'] }}</span>
+        <input type="text" class="col-3" value="{{ profile['p.healthCardNo'] }}" readonly />
+        <button type="button" class="btn btn-primary btn-sm">Edit</button>
+    </li>
+    <li id="familyDoctorId" class="list-group-item">
+        <label class="col-3" for="">Primary Practitioner: </label>
+        {# <span>{{ profile['p.familyDoctorId'] }}</span> #}
+        <input type="hidden" value="{{ profile['p.familyDoctorId'] }}" readonly />
+        <select class="" disabled >
+            <option value="none">None</option>
+            {% for doctor in doctorList %}
+                <option value="{{ doctor.id }}"
+                {% if profile['p.familyDoctorId'] ==  doctor.id %} selected {% endif %}
+                >{{ doctor.lastName }}, {{ doctor.firstName }}</option>
+            {% endfor %}
+        </select>
+        <button type="button" class="btn btn-primary btn-sm" >Edit</button>
+    </li>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="row m-3" action="/admin/uploadnewphoto/{{profile['p.id']}}">
+        <label for="photo" class="col-auto">Set new photo</label>
+        <div class="col">
+            <input type="file" id="photo" name="photo" class="form-control" accept="image/*"/>
+        </div>
+        <button class="col-auto btn btn-primary">Upload</button>
+    </form>
+</ul>
+
+<button formmethod="POST" formaction="/admin/deleteuser/{{profile['p.id']}}" type="submit" class="btn btn-primary">Delete User</button>
+{% endblock content %}
+{% block footer %}{% endblock footer %}

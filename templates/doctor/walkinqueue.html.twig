@@ -1,0 +1,12 @@
+{% extends "doctor/master.html.twig" %}
+{% block title %}Walkin Queue
+{% endblock title %}
+{% block addHead %}{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+	<div class="container bg-light p-4">
+		<h3>Walk-In Queue</h3>
+		{{ include('/doctor/_walkinqueue.html.twig') }}
+	</div>
+{% endblock content %}
+{% block footer %}{% endblock footer %}

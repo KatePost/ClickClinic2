@@ -1,0 +1,211 @@
+{% extends "patient/master.html.twig" %}
+{% block title %}Book Appointment
+{% endblock title %}
+{% block addHead %}
+<style>
+    table{
+        table-layout: fixed;
+    }
+    tbody>tr{
+        height: 150px;
+    }
+</style>
+<script>
+    var today = new Date();
+    var format = new Intl.DateTimeFormat('en-CA');
+
+    $(document).ready(function(){
+        $("#timeSlotGroup").hide();
+    $(".month").text(new Intl.DateTimeFormat('en-US', {month: 'long'}).format(today)); //this displays the Month at the top
+    var dayOfMonth = new Date(today); //this variable will track the day of the month
+    dayOfMonth.setDate(1); //setting to first day
+    var day = (dayOfMonth.getDay() + 1); //this gets the day column which the first of the month belongs to
+    var date = 1; //this is just a counter
+    for(var week = 1; week <= 5; week++){ //week starts off as week 1, it must be less than 5 (only 5 weeks in the table), and it will increment
+        for(;day <= 7; day++){ //this precondition must be set before any loop because it doesn't necessarily start at 1
+            //this will allow us to tell if we should stop. if the date is set to 32, for example (and there are 31 days in the month), it will automatically set the date object to the first day of the following month
+            dayOfMonth.setDate(date);  
+            if(date > dayOfMonth.getDate()){ //so if the date variable is 32, it will be greater than dayOfMonth's date (which will be 1) and we should break
+                break;
+            }
+            var cell = ".week"+week+" td.day"+day;
+            if(date == today.getDate()){ //put table-active styling on todays date
+                $(cell).addClass("table-active");
+            }
+            $(cell+" .num").text(dayOfMonth.getDate()); //put the number where it belongs
+            getInfo(dayOfMonth, cell); //put the number where it belongs
+            $(cell).attr("data-date", format.format(dayOfMonth));
+
+            date++;//date increments for every cell
+        }
+        day = 1 //day of the week must be reset to 1 after every  week
+    }
+
+
+/*
+    there should be some text in each box displaying the number of walk-ins and appointments scheduled that day. (maybe a button?)
+    when you click on a date there should be a drop-down or pop-up showing only the slots which are left available.
+    when you click on a slot, you can add an appointment. there should be a div or something maybe off to the side with a little form to fill
+    when you press save on that form, the calendar updates with the number of appointments
+*/
+    $("#timeSlotGroup li").click(function(){ //this is what makes the appointment form show up and populates the date and time-slot values
+        $("#appointmentForm").show();
+        $("#timeSlot").val($(this).attr("value"));
+        $("#timeSlotString").text($(this).text());
+        $("#timeSlotDate").val($(this).parents("td").attr("data-date"));
+        $("#timeSlotDateString").text($(this).parents("td").attr("data-date"));
+		$("td button span").removeClass("top-50");
+	});
+
+	$(window).resize(function(){ //this just moves the badges on the appointment buttons according to screen size
+		var width = $(window).width();
+		if(width < 1400){
+			$("td button span").removeClass("top-50");
+		} else if ($("#appointmentForm").is(":hidden")){
+			$("td button span").addClass("top-50");
+		}
+	});
+    });
+
+    function getInfo(date, element){ //this function generates the appointment booking buttons and find how many appointments are available
+		var weekday = date.getDay()
+		var dayCell = document.querySelector(element);
+        $.get("getcalendarinfo?doctorId={{ userSession.familyDoctorId }}&date=" + format.format(date), function( data ) {
+			//can't use the date variable in here so i need some other way of getting the day of week
+			
+			if(data.slots.length < 16 && weekday !=0 && weekday !=6 && data.scheduled){ //magic number //lenght is defined!
+                $(element + " .bookings").html("<button class='btn btn-light btn-outline-secondary btn-sm position-relative'>Appointments Available!<span class='position-absolute top-50 end-0 translate-middle-y badge bg-success'>"+ (16 - data.slots.length) +"</span></button>");
+			}
+			$(element + " button").click(function(){ //event handler for clicking on the appointment buttons
+				console.log(dayCell.dataset.date);
+				for(var i = 0; i <= 16; i++){ //magic number
+					$("#slot-"+i).show(); //first show all time slots
+					for(var row of data.slots){
+						$("#slot-"+row.timeSlot).hide(); //then remove whichever ones are taken that day
+					}
+				}
+				
+				$(element + " .bookings").append($("#timeSlotGroup").show()); //add the time slot menu to the calendar table cell for this day and make it visible
+			});
+			$(element).mouseleave(function(){$("#timeSlotGroup").hide()}) //hide the menu if the mouse leaves the table cell
+        });        
+    }
+    
+</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+<div class="container  bg-light p-4">
+	<h1>Book an Appointment</h1>
+	{% if errorList %}
+		<ul>
+			{% for error in errorList %}
+				<li class="alert alert-danger" role="alert" style="list-style: none;">{{ error }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+	<div class="row">
+	    <div class="col">
+        <table class="table table-striped table-bordered">
+            <thead class="table-info text-center">
+                <tr>
+                    <th colspan="7" class="month table-primary"></th>
+                </tr>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for i in 1..5 %}
+                <tr class="week{{ i }}">
+                {% for j in 1..7 %}
+                    <td class="day{{ j }}"><span class="num"></span><br/><span class="bookings"></span></td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    
+        <div id="timeSlotGroup" style="position: absolute; z-index: 4;">
+            <ul class="btn-group-vertical">
+            {% for slot in timeSlots %}
+                {% if loop.index == 0 %}
+                <li id="chooseSlot" class="btn btn-light btn-outline-primary btn-sm">{{ slot }}</li>
+                {% else %}
+                <li id="slot-{{ loop.index0 }}"class="btn btn-light btn-outline-primary btn-sm" value="{{ loop.index0 }}">{{ slot }}</li>
+                {% endif %}
+            {% endfor %}
+            {#
+            walk-ins
+            availability only when there are doctors working
+            #}
+            </ul>
+        </div>
+    </div>
+
+	<form id="appointmentForm" name="appointmentForm" method="POST" enctype="multipart/form-data" class="container col-3" style="display: none">
+		<div class="row">
+			<label class"form-label" for="timeSlot">Time Slot :</label>
+			<div>
+				<input type="hidden" id="timeSlot" name="timeSlot" readonly />
+				<input type="hidden" id="timeSlotDate" name="timeSlotDate" readonly />
+				<span id="timeSlotDateString" name="timeSlotDateString"></span> at 
+				<span id="timeSlotString" name="timeSlotString"></span>
+			</div>
+		</div>
+		<div class="row">
+			<label class"form-label" for="appointmentType">Appointment Type :</label>
+			<div>
+				<select name="appointmentType" id="appointmentType" class="form-select">
+					<option value="checkup">checkup</option>
+					<option value="mental health">mental health</option>
+					<option value="reproductive health">reproductive health</option>
+					<option value="urgent">urgent</option>
+					<option value="follow up">follow up</option>
+					<option value="other">other</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<label class"form-label" for="reason">Reason :</label>
+			<div>
+				<textarea class="form-control" id="name" name="reason">{{ v.reason}}</textarea>
+			</div>
+		</div>
+		<div class="row">
+			<label class"form-label" for="type">Type :</label>
+			<div>
+				<select class="form-select" id="type" name="type">
+					<option value="face to face">face to face</option>
+					<option value="virtual">virtual</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<span>*File Upload Optional. Only pdf, jpg, and png files under 3MBs accepted.</span>
+		</div>
+		<div class="row">
+			<label class"form-label" for="file">Select a file : </label>
+			<div>
+				<input class="form-control" type="file" id="file" name="file"/>
+			</div>
+		</div>
+		<div class="row">
+			<label class"form-label" for="fileDescription">Please provide a brief description of the uploaded file :</label>
+			<div>
+				<input class="form-control" id="fileDescription" name="fileDescription" type="text" />
+			</div>
+		</div>
+		<button type="submit"  class="btn btn-primary">Book Appointment</button>
+	</form>
+	</div>
+</div>
+{% endblock content %}
+{% block footer %}{% endblock footer %}

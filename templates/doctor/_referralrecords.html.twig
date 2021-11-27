@@ -1,0 +1,19 @@
+{% if referrals %}
+    <table
+        class="table table-striped">
+        <tr>
+            <th>Referred Date</th>
+            <th>Specialization</th>
+            <th>Referral Priority</th>
+        </tr>
+        {% for row in referrals %}
+            <tr>
+                <td>{{row.dateReferred}}</td>
+                <td>{{row.specialistField}}</td>
+                <td>{{row.priority}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>This patient has no previous referrals</p>
+{% endif %}

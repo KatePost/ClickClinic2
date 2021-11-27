@@ -1,0 +1,29 @@
+{% extends "/doctor/queuetemplate.html.twig" %}
+{% block cardHead %}Appointment
+	{% if row.date == 'today'%}
+		today
+	{% else %}
+		{{row.date}}
+	{% endif %}
+	at
+	{{row.time}}
+{% endblock cardHead %}
+{% block cardTitle %}Appointment with
+	{{row.lastName}},
+	{{row.firstName}}
+{% endblock cardTitle %}
+{% block subtitle %}
+	{{row.type}}
+{% endblock subtitle %}
+{% block cardText %}
+	{{row.description}}
+{% endblock cardText %}
+{% block button1 %}
+	<a id="button{{row.bookingId}}" href="/doctor/appointmentform/{{row.patientId}}/{{row.bookingId}}" class="btn btn-primary">{{row.status == 'in progress' ? 'Resume Appointment' : 'Begin Appointment'}}</a>
+{% endblock button1 %}
+{% block button2 %}
+	<a href="/doctor/patientfile/{{row.patientId}}" class="btn btn-secondary">View Patient File</a>
+{% endblock button2 %}
+{% block noCards %}
+	<h4>No upcoming appointments</h4>
+{% endblock noCards %}

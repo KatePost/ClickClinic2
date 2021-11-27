@@ -1,0 +1,83 @@
+
+{% extends "/doctor/master.html.twig" %}
+
+{% block title %}Patient File
+{% endblock title %}
+{% block addHead %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		$(document).ready(function () {
+
+            if('{{searchVal}}' !== ''){
+                searchPatients('{{searchVal}}');
+            }
+
+            $('input[name=searchMain]').keyup(function () {
+                var searchVal = $(this).val();
+                if(searchVal == ''){
+                    $("#data").html("<p>No results</p>");
+                }else{
+                searchPatients(searchVal);
+                }
+            });
+
+            $('#searchMain').click( function (){
+                let searchVal = $('input[name=searchMain]').val();
+                let url = "/doctor/searchpatients/" + searchVal;
+                window.location.href = url;
+            })
+
+            function searchPatients(searchVal){
+                $.ajax({
+                    url: '/doctor/search/' + searchVal,
+                    type: 'GET',
+                    dataType: "json",
+                }).done(function(data) {
+                    if(data === false){
+                        $("#data").html("<p>No results</p>");
+                    }
+                    else{
+                        displayResult(data);
+                    }
+                });
+            }
+
+            function displayResult(data){
+                var result = '<table class="table"><tr><th>Last Name</th>'
+                    + '<th>First Name</th>'
+                    + '<th>DOB</th>'
+                    + '<th>Family Doctor</th>'
+                    + '<th>Patient File</th></tr>';
+                for (var i=0; i <data.length; i++) {
+                    var patient = data[i];
+                    result += '<tr>';
+                    result += '<td>' + patient.ptLastName + '</td>';
+                    result += '<td>' + patient.firstName + '</td>'; // FIXME: html encode to entities ?
+                    result += '<td>' + patient.dateOfBirth + '</td>';
+                    result += '<td>' + patient.docLastName + '</td>';
+                    result += '<td><a href="/doctor/patientfile/' + patient.id + '">Patient File</a></td>';
+                    result += '</tr>';
+                }
+                result += '</table>';
+                $("#data").html(result);
+            }
+        });
+	</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+	<div class="container bg-light">
+    <h3>Search through your patients by name</h3>
+		<div class="row p-4">
+			<div class="col">
+				<input class="form-control me-2" name="searchMain" type="search" placeholder="Search" autocomplete="off" value="{{searchVal}}">
+			</div>
+			<div class="col">
+				<button id="searchMain" class="btn btn-outline-primary" type="button">Search</button>
+			</div>
+			<div id='data'></div>
+		</div>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}
+  

@@ -1,0 +1,14 @@
+{
+    "name": "kpost/clickclinic",
+    "require": {
+        "slim/slim": "^3.12",
+        "twig/twig": "v2.14.7",
+        "slim/twig-view": "^2.5",
+        "sergeytsalkov/meekrodb": "v2.3.1",
+        "monolog/monolog": "^2.3",
+        "respect/validation": "^2.0",
+        "sendgrid/sendgrid": "^7.10",
+        "firebase/php-jwt": "^5.5",
+        "guzzlehttp/guzzle": "^7.4"
+    }
+}

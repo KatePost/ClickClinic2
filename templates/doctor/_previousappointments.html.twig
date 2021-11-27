@@ -1,0 +1,33 @@
+{% if appointments %}
+	<table class="table table-striped">
+	<thead>
+		<th>Appointment Date:</th>
+		<th>Appointment Type:</th>
+		<th>Patient issue:</th>
+		<th>Appointment Status:</th>
+		<th>Doctor's Notes:</th>
+</thead>
+		{% for row in appointments %}
+			<tr>
+				<td>{{row.dateTime}}</td>
+				<td>{{row.appointmentType}}</td>
+				<td>{{row.patientDescription}}</td>
+				{% if row.status != 'completed'  %}
+					<td>
+						<a href="/doctor/appointmentform/{{row.patientId}}/{{row.apptId}}">{{row.status}}</a>
+					</td>
+				{% else %}
+					<td>{{row.status}}</td>
+				{% endif %}
+
+				<td>
+					{% if row.status == 'completed' %}
+						{{row.doctorsNotes|raw}}
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% else %}
+	<p>This patient has no previous appointments</p>
+{% endif %}

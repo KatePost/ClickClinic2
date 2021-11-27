@@ -1,0 +1,422 @@
+{% extends "admin/master.html.twig" %}
+{% block title %}{% endblock title %}
+{% block addHead %}
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0-rc.1/dist/chartjs-plugin-datalabels.min.js" integrity="sha256-Oq8QGQ+hs3Sw1AeP0WhZB7nkjx6F1LxsX6dCAsyAiA4=" crossorigin="anonymous"></script>
+    <script>
+	var colours = [
+					'rgba(255, 99, 132, 0.8)',
+					'rgba(54, 162, 235, 0.8)',
+					'rgba(255, 206, 86, 0.8)',
+					'rgba(75, 192, 192, 0.8)',
+					'rgba(153, 102, 255, 0.8)',
+					'rgba(255, 159, 64, 0.8)'
+            ];
+
+	var fontSize = 16;	
+	Chart.defaults.font.size = 14;
+	Chart.register(ChartDataLabels);	
+	$(document).ready(function () {
+		$.ajax({
+			url: '/admin/patientsperdoctorapi', 
+			type: 'GET', 
+			dataType: 'json'
+			}).done(function (values) {
+				if(values){
+				message = 'Current Number of Scheduled Appointments Per Doctor';
+				element = 'patientsPerDoctor';
+				barChart(values, message,element);
+				} else {
+					$("#patientsPerDoctor").hide();
+				}
+
+			});
+
+		$.ajax({
+			url: '/admin/appointmenttypesapi', 
+			type: 'GET', 
+			dataType: 'json'
+			}).done(function (values) {
+				if(values){
+					var title = 'Current Appointment Type Breakdown for Scheduled Appointments';
+					var element = 'appointmentTypes';
+					appointmentTypes(values, title, element);
+				}else {
+					$("#appointmentTypes").hide();
+				}
+			});
+
+		$.ajax({
+			url: '/admin/waittimesperdoctorapi', 
+			type: 'GET', 
+			dataType: 'json'
+			}).done(function (values) {
+				if(values){
+					avgWaitTimesPerDoctor(values);
+				}else {
+					$("#avgWaitTimesPerDoctor").hide();
+				}
+			});
+
+			$.ajax({
+			url: '/admin/walkinappointmenttypesapi', 
+			type: 'GET', 
+			dataType: 'json'
+			}).done(function (values) {
+
+				if(values) {
+					var title = 'Current Appointment Type Breakdown for Walkins';
+					var element = 'walkinAppointmentTypes';
+					appointmentTypes(values, title, element);
+				}else {
+					$("#walkinAppointmentTypes").hide();
+				}
+
+			});
+
+			$.ajax({
+			url: '/admin/walkinpatientsperdoctorapi', 
+			type: 'GET', 
+			dataType: 'json'
+			}).done(function (values) {
+				if(values){
+					walkinPatientsPerDoctor(values);
+				}else {
+					$("#walkinPatientsPerDoctor").hide();
+				}
+			});
+
+			$.ajax({
+			url: '/admin/walkinwaittimesperdoctorapi', 
+			type: 'GET', 
+			dataType: 'json'
+			}).done(function (values) {
+				if(values) {
+					walkinAvgWaitTimesPerDoctor(values);
+				}else {
+					$("#walkinAvgWaitTimesPerDoctor").hide();
+				}
+			});
+
+			$.ajax({
+			url: '/admin/walkinstats', 
+			type: 'GET', 
+			dataType: 'json'
+			}).done(function (stats) {
+			 $("#walkinCapacity").html(stats.walkinCapacity);
+			 $("#walkinAvailableSpots").html(stats.walkinAvailableSpots);
+			$("#walkinAvgWaitTime").html(stats.walkinAvgWaitTime);
+			$("#appointmentsCapacity").html(stats.appointmentsCapacity);
+			 $("#appointmentsAvailableSpots").html(stats.appointmentsAvailableSpots);
+			 $("#appointmentsAvgWaitTime").html(stats.appointmentsAvgWaitTime);
+			});
+
+		});
+
+			function barChart(values, message, element) {
+			// alert("here");
+			let labels = [];
+			let counts = [];
+			for (let i = 0; i < values.length; i++) {
+			let row = values[i];
+			labels.push("Dr. " + row['firstName'] + " " + row['lastName'] );
+			counts.push(row['count'])
+			}
+		let myChart = document.getElementById(element).getContext('2d');
+		let doctorBarChart = new Chart(myChart, {
+			type: 'bar',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Doctors',
+					data: counts,
+					backgroundColor: colours
+				}]
+			},
+			options: {
+				  scales: {
+    					y: {
+      						title: {
+        						display: true,
+        						text: 'Number of Patients'
+      						}, ticks: {
+								  stepSize: 1
+							  }
+    					}
+  						},			
+				plugins: {
+					title: {
+						display: true,
+						position: 'top',
+						text: message,
+						font: {
+							size: fontSize,
+							weight: 'bold'
+						}
+						},
+					legend: {
+						display: false
+					}
+					
+				}				
+				}
+		})
+		}
+
+
+		function avgWaitTimesPerDoctor(values) {
+			// alert("here");
+			let labels = [];
+			let counts = [];
+			for (let i = 0; i < values.length; i++) {
+			let row = values[i];
+			labels.push("Dr. " + row['firstName'] + " " + row['lastName'] );
+			counts.push(row['avgWaitTime'])
+			}
+		let myChart = document.getElementById('avgWaitTimesPerDoctor').getContext('2d');
+		let doctorBarChart = new Chart(myChart, {
+			type: 'bar',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Doctors',
+					data: counts,
+					backgroundColor: colours
+				}]
+			},
+			options: {
+				 scales: {
+    					y: {
+      						title: {
+        						display: true,
+        						text: 'Minutes'
+      						}
+    					}
+  						},			
+				plugins: {
+					title: {
+						display: true,
+						position: 'top',
+						text: 'Current Average Wait Time (Minutes) Per Doctor for Scheduled Appointments',
+						font: {
+							size: fontSize,
+							weight: 'bold'
+						}
+						},
+					legend: {
+						display: false
+					}
+					
+				}				
+				}
+		})
+		}
+
+	
+
+		function walkinPatientsPerDoctor(values) {
+			// alert("here");
+			let labels = [];
+			let counts = [];
+			for (let i = 0; i < values.length; i++) {
+			let row = values[i];
+			labels.push("Dr. " + row['firstName'] + " " + row['lastName'] );
+			counts.push(row['count'])
+			}
+		let myChart = document.getElementById('walkinPatientsPerDoctor').getContext('2d');
+		let doctorBarChart = new Chart(myChart, {
+			type: 'bar',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Doctors',
+					data: counts,
+					backgroundColor: colours
+				}]
+			},
+			options: {
+				 scales: {
+    					y: {
+      						title: {
+        						display: true,
+        						text: 'Number of Patients'
+      						}, ticks: {
+								  stepSize: 1
+							  }
+    					}
+  						},			
+				plugins: {
+					title: {
+						display: true,
+						position: 'top',
+						text: 'Current Number of Walkin Patients Seen Per Doctor',
+						font: {
+							size: 16,
+							weight: 'bold'
+						}
+						},
+					legend: {
+						display: false
+					}
+					
+				}				
+				}
+		})
+		}
+
+		function walkinAvgWaitTimesPerDoctor(values) {
+			// alert("here");
+			let labels = [];
+			let counts = [];
+			for (let i = 0; i < values.length; i++) {
+			let row = values[i];
+			labels.push("Dr. " + row['firstName'] + " " + row['lastName'] );
+			counts.push(row['avgWaitTime'])
+			}
+		let myChart = document.getElementById('walkinAvgWaitTimesPerDoctor').getContext('2d');
+		let doctorBarChart = new Chart(myChart, {
+			type: 'bar',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Doctors',
+					data: counts,
+					backgroundColor: colours
+				}]
+			},
+			options: {
+				 scales: {
+    					y: {
+      						title: {
+        						display: true,
+        						text: 'Minutes'
+      						}
+    					}
+  						},			
+				plugins: {
+					title: {
+						display: true,
+						position: 'top',
+						text: 'Current Average Wait Time (Minutes) Per Doctor for Walkins',
+						font: {
+							size: fontSize,
+							weight: 'bold'
+						}
+						},
+					legend: {
+						display: false
+					}
+					
+				}				
+				}
+		})
+		}
+
+			 function appointmentTypes(values, message, element) {
+		
+			let labels = [];
+			let counts = [];
+			for (let i = 0; i < values.length; i++) {
+			let row = values[i];
+			labels.push(row['appointmentType']);
+			counts.push(row['count'])
+			}
+			const data = {
+			labels: labels,
+			datasets: [
+						{
+					label: 'My First dataset',
+					backgroundColor: colours,
+				// borderColor: 'rgb(255, 99, 132)',
+				data: counts
+				}
+				]
+				};
+				const config = {
+				type: 'doughnut',
+				data: data,
+				options: {	
+					plugins: {
+						title: {
+							display: true,
+							position: 'top',
+							text: message,
+							font: {
+							size: fontSize,
+							weight: 'bold'
+						}
+						},
+						legend: {
+						position: 'bottom'
+						}
+					}
+				}
+	// 			plugins: [ChartDataLabels],
+  	// 					options: {
+    // // ...
+  	// 			}
+			};
+			const myChart = new Chart(document.getElementById(element), config);
+		}
+
+	</script>
+			
+
+
+
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+
+	<div class="container p-4">
+	<h1>Daily Stats</h1>
+		<div class="row p-4" id="stats">
+			<div class="container p-4 my-3 border col-5">
+			<h3>Scheduled Appointments</h3>
+				<p>Capacity: <span id="appointmentsCapacity"></span></p>
+				<p>Available Spots Remaining: <span id="appointmentsAvailableSpots"></span></p>
+				<p>Average Wait Time: <span id="appointmentsAvgWaitTime"></span> minutes</p>
+			</div>
+			
+			<div class="container p-4 my-3 border col-5">
+			<h3>Walkins</h3>
+				<p>Capacity: <span id="walkinCapacity"></span></p>
+				<p>Available Spots Remaining: <span id="walkinAvailableSpots"></span></p>
+				<p>Average Wait Time: <span id="walkinAvgWaitTime"></span> minutes</p>
+			</div>
+
+		</div>
+		<div class="row p-4">
+			<div class="col p-4">
+				<canvas id="patientsPerDoctor"></canvas>
+			</div>
+			<div class="col p-4">
+				
+				<canvas id="walkinPatientsPerDoctor"></canvas>
+			</div>
+		<div>
+		<div class="row p-4">
+			<div class="col-6 p-4">
+				<canvas id="appointmentTypes"></canvas>
+			</div>
+			<div class="col-6 p-4">
+				<canvas id="walkinAppointmentTypes"></canvas>
+			</div>
+		</div>
+		<div class="row p-4">
+			<div class="col-6 p-4">
+				<canvas id="avgWaitTimesPerDoctor"></canvas>
+			</div>
+			<div class="col-6 p-4">
+				<canvas id="walkinAvgWaitTimesPerDoctor"></canvas>
+			</div>
+		</div>
+		
+	<div>
+
+{% endblock content %}
+{% block footer %}{% endblock footer %}

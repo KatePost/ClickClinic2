@@ -1,0 +1,15 @@
+{% extends "master.html.twig" %}
+
+{% block content %}
+
+{% if errorList %}
+    <ul>
+    {% for error in errorList %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+<p>You have been logged out. <a href="/">Click to continue</a>. </p>
+
+{% endblock %}

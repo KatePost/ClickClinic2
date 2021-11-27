@@ -1,0 +1,235 @@
+{% extends "doctor/master.html.twig" %}
+{% block title %}Dashboard
+{% endblock title %}
+{% block addHead %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0-rc.1/dist/chartjs-plugin-datalabels.min.js" integrity="sha256-Oq8QGQ+hs3Sw1AeP0WhZB7nkjx6F1LxsX6dCAsyAiA4=" crossorigin="anonymous"></script>
+
+
+
+	<script>
+	var fontSize = 16;
+	Chart.defaults.font.size = 14;
+	Chart.register(ChartDataLabels);
+
+		$(document).ready(function () {
+$.ajax({
+	url: '/doctor/chartapi', 
+	type: 'GET', 
+	dataType: 'json'}).done(function (values) {
+		if(values){
+			updateValues(values);
+		} else {
+			$("#myChart").hide();
+		}
+		
+});
+
+$.ajax({
+	url: '/doctor/walkinchartapi', 
+	type: 'GET', 
+	dataType: 'json'}).done(function (values) {
+		if(values){
+			updateValues2(values);
+		} else {
+			$("#myChart2").hide();
+		}
+		
+});
+
+function updateValues(values) {
+let labels = [];
+let counts = [];
+for (let i = 0; i < values.length; i++) {
+let row = values[i];
+labels.push(row['type']);
+counts.push(row['count'])
+}
+
+const data = {
+labels: labels,
+datasets: [
+{
+label: 'My First dataset',
+backgroundColor: [
+'rgba(255, 99, 132, 0.8)',
+'rgba(54, 162, 235, 0.8)',
+'rgba(255, 206, 86, 0.8)',
+'rgba(75, 192, 192, 0.8)',
+'rgba(153, 102, 255, 0.8)',
+'rgba(255, 159, 64, 0.8)'
+],
+// borderColor: 'rgb(255, 99, 132)',
+data: counts
+}
+]
+};
+
+const config = {
+type: 'doughnut',
+data: data,
+options: {
+plugins: {
+title: {
+display: true,
+position: 'top',
+text: 'Overall Appointment Type Breakdown',
+							font: {
+							size: fontSize,
+							weight: 'bold'
+						}
+},
+legend: {
+position: 'bottom'
+}
+}
+}
+};
+
+const myChart = new Chart(document.getElementById('myChart'), config);
+}
+
+function updateValues2(values) {
+let labels = [];
+let counts = [];
+for (let i = 0; i < values.length; i++) {
+let row = values[i];
+labels.push(row['type']);
+counts.push(row['count'])
+}
+
+const data = {
+labels: labels,
+datasets: [
+{
+label: 'My First dataset',
+backgroundColor: [
+'rgba(255, 99, 132, 0.8)',
+'rgba(54, 162, 235, 0.8)',
+'rgba(255, 206, 86, 0.8)',
+'rgba(75, 192, 192, 0.8)',
+'rgba(153, 102, 255, 0.8)',
+'rgba(255, 159, 64, 0.8)'
+],
+// borderColor: 'rgb(255, 99, 132)',
+data: counts
+}
+]
+};
+
+const config = {
+type: 'doughnut',
+data: data,
+options: {
+plugins: {
+title: {
+display: true,
+position: 'top',
+text: 'Overall Walkin Appointment Type Breakdown',
+							font: {
+							size: fontSize,
+							weight: 'bold'
+						}
+},
+legend: {
+position: 'bottom'
+}
+}
+}
+};
+
+const myChart = new Chart(document.getElementById('myChart2'), config);
+}
+});
+	</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+	<div class="container bg-light">
+		<div class="row justify-content-between">
+			<div class="col-6">
+				{% if docSchedule %}
+					<div class="alert text-center">
+						<h3 class="text-center">
+							You are scheduled for
+							{{ docSchedule.availability }}
+							today</h3>
+					</div>
+					{% if docSchedule.availability == 'walk-ins' %}
+						{% if walkins.count > 0 %}
+							<h4 class="text-center">Next Walk-In In Queue</h4>
+							<div class="px-4">
+								<div class="card m-4">
+									<div class="card-header">
+										Queued since
+										{% if walkins.date == 'today'%}
+											today
+										{% else %}
+											{{walkins.date}}
+										{% endif %}
+										at
+										{{walkins.time}}
+									</div>
+									<div class="card-body">
+										<h5 class="card-title">
+											Walk-In Patient:
+											{{walkins.lastName}},
+											{{walkins.firstName}}
+										</h5>
+										<h6>
+											<i>
+												{{walkins.type}}
+											</i>
+										</h6>
+										<p class="card-text">
+											<em>
+												{{walkins.description}}
+											</em>
+										</p>
+										<a id="button{{walkins.walkinId}}" href="/doctor/walkinform/{{walkins.ptId}}/{{walkins.walkinId}}" class="btn btn-primary">{{walkins.activeStatus == 'IN PROGRESS' ? 'Resume Appointment' : 'Begin Appointment'}}</a>
+										<a href="/doctor/patientfile/{{walkins.ptId}}" class="btn btn-secondary">View Patient File</a>
+									</div>
+								</div>
+							</div>
+						{% else %}
+							<div class="alert alert-success text-center">
+								<h4>No walk-ins left in queue!</h4>
+							</div>
+						{% endif %}
+					{% elseif docSchedule.availability == 'appointments'%}
+						<h4 class="text-center mt-3">Upcoming Appointments</h4>
+						{{ include('/doctor/_upcomingappointment.html.twig') }}
+						<a href="/doctor/upcomingappointments">View all upcoming appointments</a>
+					{% endif %}
+					
+				{% else %}
+				<h3 class="text-center">
+					You are not scheduled today</h3>
+				{% endif %}
+			</div>
+			<div class="col-5 m-3 g-3">
+				<div class="row">
+					<div class="col text-center">
+						{% if docSchedule.availability == 'walk-ins' %}
+							<h4>{{walkins.count}}
+								{{walkins.count == 1 ? 'patient' : 'patients' }}
+								left in the walk-in queue</h4>
+						{% elseif docSchedule.availability == 'appointments' %}
+							<h4>You have
+								{{count == 0 ? 'no' : count }}
+								{{count == 1 ? 'appointment' : 'appointments'}}
+								remaining today
+							</h4>
+						{% endif %}
+					</div>
+				</div>
+				<div class="row mt-4">
+					<canvas id="myChart"></canvas>
+					<canvas id="myChart2"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock content %}
+{% block footer %}{% endblock footer %}

@@ -1,0 +1,54 @@
+{% extends "master.html.twig" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block head %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var currPageNo = {{pageNo}};
+
+        window.addEventListener('popstate', (event) => {
+            // console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+            loadPage(event.state.page, true);
+        });
+
+        function loadPage(newPageNo, noHistory = false) {
+            if (newPageNo < 1 || newPageNo > {{maxPages}}) return;
+            // remove bold from previously current page and put bold on the new currrent page nav link
+            $("#pageNav" + currPageNo).css("font-weight","Normal");
+            $("#pageNav" + newPageNo).css("font-weight","Bold");
+            currPageNo = newPageNo;
+            // only show prev and next if they are useful
+            $("#pageNavPrev").toggle(newPageNo > 1);
+            $("#pageNavNext").toggle(newPageNo < {{maxPages}});
+            $(".articlePreviewBox").load("/ajaxsinglepage/" + currPageNo);
+            if (noHistory == false) {
+                history.pushState({page: currPageNo}, '', '/ajaxpaginated/' + currPageNo);
+            }
+        }
+
+        $(document).ready(function() {
+            $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+                console.log("Ajax error occured on " + settings.url);
+                alert("Ajax error occured");
+            });
+
+            loadPage({{pageNo}}, true);
+
+        });
+    </script>
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="articlePreviewBox"></div>
+    <div class="pageNavigation">
+    <br>
+    <span id="pageNavPrev" onclick="loadPage(currPageNo-1)">Previous</span>
+    {% for no in 1 .. maxPages %}
+        <span id="pageNav{{no}}" onclick="loadPage({{no}})">{{no}}</span>
+    {% endfor %}
+    <span  id="pageNavNext" onclick="loadPage(currPageNo+1)">Next</span>
+    </div>
+{% endblock %}

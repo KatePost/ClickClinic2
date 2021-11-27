@@ -1,0 +1,22 @@
+{% if patients %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Last Name</td>
+            <th>First Name</td>
+            <th>DOB</td>
+            <th>Patient File</td>
+        </tr>
+    </thead>
+    {% for patient in patients %}
+        <tr>
+            <td>{{patient.lastName}}</td>
+            <td>{{patient.firstName}}</td>
+            <td>{{patient.dateOfBirth}}</td>
+            <td><a href="/doctor/patientfile/{{patient.id}}">Patient File</a></td>
+        </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <h4>No patients to display</h4>
+{% endif %}

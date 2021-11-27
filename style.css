@@ -1,0 +1,22 @@
+body {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    margin: 0 auto;
+    padding: 20px;
+    width: 90%; /* 960px; */
+    background-color: white;
+}
+
+
+.table tbody tr.highlight td {
+    background-color: #CFF5FF;
+}
+
+#downloadFile {
+    color: white;
+    text-decoration: none;
+}

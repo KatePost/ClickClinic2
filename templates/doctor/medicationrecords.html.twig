@@ -1,0 +1,47 @@
+{% extends "doctor/master.html.twig" %}
+{% block title %}Medication Records
+{% endblock title %}
+{% block addHead %}
+<script>
+    var currPageNo = 1;
+		$(document).ready(function () {
+		refreshRecords();
+});
+function refreshRecords(newPage = 1) {
+$('#prevMeds').load("/doctor/api/medications/{{ patient.id }}?medPage=" + newPage);
+currPageNo = newPage;
+$("#prev").toggle(newPage > 1);
+$("#next").toggle(newPage < {{maxPages}});
+
+};
+</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+<div class="row">
+<div class="col">
+<h4>Medications Records for {{patient.lastName}}, {{patient.firstName}}</h4>
+</div>
+<div class="col">
+<a href="/doctor/patientfile/{{patient.id}}" class="btn btn-primary">Back to Patient File</a>
+</div>
+<div id="prevMeds"></div>
+    {% if maxPages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item " id="prev" onclick="refreshRecords(currPageNo - 1)">
+                    <a class="page-link">Previous</a>
+                </li>
+                {% for i in 1.. maxPages %}
+                    <li class="page-item" id="prevMed{{i}}" onclick="refreshRecords({{i}})">
+                        <a class="page-link">{{i}}</a>
+                    </li>
+                {% endfor %}
+                <li class="page-item" id="next">
+                    <a class="page-link" onclick="refreshRecords(currPageNo + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock content %}

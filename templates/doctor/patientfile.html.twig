@@ -1,0 +1,134 @@
+{% extends "doctor/master.html.twig" %}
+{% block title %}Patient File
+{% endblock title %}
+{% block addHead %}
+	<script>
+var currPageNo = 1;
+		$(document).ready(function () {
+		refreshRecords();
+});
+
+function refreshRecords(newPage = 1) {
+$('#prevAppts').load("/doctor/api/patientfile/{{ patient.id }}?apptPage=" + newPage);
+currPageNo = newPage;
+$("#prev").toggle(newPage > 1);
+$("#next").toggle(newPage < {{maxPages}});
+
+};
+	</script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+	<div id="mainProfile">
+		<div class="container  bg-light">
+			<div>
+				<h3 id="ptInfo" class="text-center  p-4">Patient File for :
+					{{patient.lastName}},
+					{{patient.firstName}}</h3>
+			</div>
+			<div class="row g-3 justify-content-around">
+				<div class="card mb-3 col-5" style="max-width: 540px;">
+					<div class="row g-0">
+						<div class="col-md-4">
+						{% if patient.photo != null %} 
+								<img src="{{patient.photo}}" class="img-fluid rounded-start" width="200px">
+								{% else %}
+								<img src="/images/no_photo.png" class="img-fluid rounded-start" width="200px">
+								{% endif %}
+						</div>
+						<div class="col-8">
+							<div class="card-body">
+								<h4 class="card-title text-center">Patient Information</h4>
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item">Date of Birth:
+										{{patient.dateOfBirth}}</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+			</div>
+			<div class="list-group col-auto text-center">
+					<a href='/doctor/medications/{{ patient.id }}' class="list-group-item list-group-item-action link-primary">Medication History</a>
+					<a href='/doctor/referrals/{{ patient.id }}' class="list-group-item list-group-item-action link-primary">Referral History</a>
+				</div>
+				<div class="list-group col-auto text-center">
+					<a href='/doctor/uploadfile/{{ patient.id }}' class="list-group-item list-group-item-action link-primary">Upload a file to this patient's file</a>
+					<a href='/doctor/referral/{{ patient.id }}' class="list-group-item list-group-item-action link-primary">Add a referral to this patient's file</a>
+					<a href='/doctor/createprescription/{{ patient.id }}' class="list-group-item list-group-item-action link-primary">Add a medication to this patient's file</a>
+				</div>
+				
+				</div>
+				<div id="apptRecord">
+					<h4>Appointment Records</h4>
+					<div id="prevAppts"></div>
+					{% if maxPages > 1 %}
+						<nav>
+							<ul class="pagination justify-content-center">
+								<li class="page-item " id="prev" onclick="refreshRecords(currPageNo - 1)">
+									<a class="page-link">Previous</a>
+								</li>
+								{% for i in 1.. maxPages %}
+									<li class="page-item" id="prevAppt{{i}}" onclick="refreshRecords({{i}})">
+										<a class="page-link">{{i}}</a>
+									</li>
+								{% endfor %}
+								<li class="page-item" id="next">
+									<a class="page-link" onclick="refreshRecords(currPageNo + 1)">Next</a>
+								</li>
+							</ul>
+						</nav>
+					{% endif %}
+				</div>
+				<div id="doctorFiles">
+					<h4>Files uploaded to the patient</h4>
+					{% if doctorFiles %}
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Upload Date</th>
+									<th>File description</th>
+									<th>File</th>
+									<th>Doctor's Notes About File</th>
+								</tr>
+							</thead>
+							{% for file in doctorFiles %}
+								<tr>
+									<td>{{file.date}}</td>
+									<td>{{file.description}}</td>
+									<td>
+										<a href="{{ file.file }}">Download</a>
+									</td>
+									<td>{{file.doctorsNotes}}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					{% else %}
+						<p>This patient has no previous appointments</p>
+					{% endif %}
+				</div>
+				<div id="patientFiles">
+					<h4>Files uploaded by the patient</h4>
+					{% if patientFiles %}
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Upload Date</th>
+									<th>File description</th>
+									<th>File</th>
+								</tr>
+							</thead>
+							{% for file in patientFiles %}
+								<tr>
+									<td>{{file.date}}</td>
+									<td>{{file.description}}</td>
+									<td><a href="{{ file.file }}">Download</a></td>
+								</tr>
+							{% endfor %}
+						</table>
+					{% else %}
+						<p>This patient has no previous appointments</p>
+					{% endif %}
+				</div>
+			
+		{% endblock content %}
+		{% block footer %}{% endblock footer %}

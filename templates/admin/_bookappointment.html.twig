@@ -1,0 +1,65 @@
+	<form id="appointmentForm" name="appointmentForm" method="POST" action="/admin/bookappointments" enctype="multipart/form-data" class="row mb-5"  style="display: none" >
+		<h3>Book an Appointment</h3>
+		<span class="fs-5" id="timeSlotDateString" name="timeSlotDateString"></span>
+			<div class="row mb-3">
+				<div class="col-auto">
+					<input type="hidden" id="timeSlotDate" name="timeSlotDate" readonly />
+				</div>
+				<div class="col">
+					<label class="form-label" for="doctor">Doctor</label>
+					<select class="form-select" id="doctor" name="doctor"></select>
+				</div>
+				<div class="col">
+					<label class="form-label" for="patient">Patient</label>
+					<select class="form-select" id="patient" name="patient"></select>
+				</div>
+				<div class="col">
+					<label class="form-label" for="timeSlot">Time Slot :</label>
+					<select id="timeSlot" name="timeSlot" class="form-select">
+					{% for slot in timeSlots %}
+						<option value="{{loop.index0}}">{{slot}}</option>
+					{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col">
+					<label class"form-label" for="appointmentType">Appointment Type :</label>
+					<select name="appointmentType" id="appointmentType" class="form-select">
+						<option value="checkup">checkup</option>
+						<option value="mental health">mental health</option>
+						<option value="reproductive health">reproductive health</option>
+						<option value="urgent">urgent</option>
+						<option value="follow up">follow up</option>
+						<option value="other">other</option>
+					</select>
+				</div>
+				<div class="col">
+					<label class"form-label" for="type">Presence :</label>
+					<select class="form-select" id="type" name="type">
+						<option value="face to face">face to face</option>
+						<option value="virtual">virtual</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-4 mb-3">
+					<div class="row">
+						<span>*File Upload Optional. Only pdf, jpg, and png files under 3MBs accepted.</span>
+					</div>
+					<div class="row">
+						<label class"form-label" for="file">Select a file : </label>
+						<input class="form-control" type="file" id="file"/>
+					</div>
+					<div class="row">
+						<label class"form-label" for="fileDescription">Please provide a brief description of the uploaded file :</label>
+						<input class="form-control" id="fileDescription" type="text" />
+					</div>
+				</div>
+				<div class="col mb-3">
+					<label class"form-label" for="reason">Reason :</label>
+					<textarea class="form-control" id="reason" name="reason"></textarea>
+				</div>
+			</div>
+			<button type="submit"  class="btn btn-primary col-auto">Book Appointment</button>
+	</form>

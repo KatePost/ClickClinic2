@@ -1,0 +1,143 @@
+{% extends "admin/master.html.twig" %}
+{% block title %}New User{% endblock title %}
+{% block addHead %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#role').change(function() {
+                var role = this.value;
+                //always required - role, first name, last name, address, phone
+                //always optional - date of birth, family doctor, photo
+                //always enabled - date of birth, address, email, password, photo
+                $("#fname").attr("disabled", false);
+                $("#lname").attr("disabled", false);
+                $("#email").attr("disabled", false);
+                $("#password").attr("disabled", false);
+                $("#address").attr("disabled", false);
+                $("#phone").attr("disabled", false);
+                $("#dob").attr("disabled", false);
+                $("#photo").attr("disabled", false);
+                $("#submit").attr("disabled", false);
+                if(role == "doctor"){
+                //required - license number, email, password,
+                    $("#license").attr("required", true);
+                    $("#email").attr("required", true);
+                    $("#password").attr("required", true);
+                //not required - health card, family doctor
+                    $("#healthcard").attr("required", false);
+                //disabled - health card, family doctor
+                    $("#healthcard").attr("disabled", true);
+                    $("#doctor").attr("disabled", true);
+                //enabled - license number
+                    $("#license").attr("disabled", false);
+                    
+                }
+                if(role == "patient"){ //health card required, license disabled
+                //required - health card number
+                    $("#healthcard").attr("required", true);
+                //not required - license number, email, password, family doctor
+                    $("#license").attr("required", false);
+                    $("#email").attr("required", false);
+                    $("#password").attr("required", false);
+                //disabled - license number
+                    $("#license").attr("disabled", true);
+                //enabled - health card number, family doctor
+                    $("#doctor").attr("disabled", false);
+                    $("#healthcard").attr("disabled", false);
+
+                }
+                if(role == "admin"){
+                //required - email, password
+                    $("#email").attr("required", true);
+                    $("#password").attr("required", true);
+                //not required - health card number, license number
+                    $("#healthcard").attr("required", false);
+                    $("#license").attr("required", false);
+                //disabled - license number, family doctor, health card number
+                    $("#healthcard").attr("disabled", true);
+                    $("#doctor").attr("disabled", true);
+                    $("#license").attr("disabled", true);
+                //enabled - basically nothing lol
+                }
+                $("[required]").parent().siblings("th").children("span").html("*");
+                $(":not([required]").parent().siblings("th").children("span").html("");
+            });
+        });
+    </script>
+{% endblock addHead %}
+{% block header %}{% endblock %}
+{% block content %}
+
+
+<h1>New User</h1>
+<form method="POST" enctype="multipart/form-data" >
+<table class="container-sm table">
+    <tr>
+        <th>Role<span></span></th>
+        <td class="input-group">
+            <select id="role" name="role" class="form-select" required >
+                <option disabled selected>Select role</option>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+                <option value="admin">Administrator</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th>Email<span></span></th>
+        <td class="input-group"><input type="email" id="email" name="email" class="form-control was-validated" placeholder="ex. email@address.com" disabled/></td>
+    </tr>
+    <tr>
+        <th>Password<span></span></th>
+        <td class="input-group"><input type="password" id="password" name="password" class="form-control" placeholder="min 8 chars. min one of each: number, uppercase letter, lowercase letter." disabled/></td>
+    </tr>
+    <tr>
+        <th>First Name<span></span></th>
+        <td class="input-group"><input type="text" id="fname" name="fname" class="form-control" required disabled/></td>
+    </tr>
+    <tr>
+        <th>Last Name<span></span></th>
+        <td class="input-group"><input type="text" id="lname" name="lname" class="form-control" required disabled/></td>
+    </tr>
+    <tr>
+        <th>Address<span></span></th>
+        <td class="input-group"><input type="text" id="address" name="address" class="form-control" required disabled/></td>
+    </tr>
+    <tr>
+        <th>Phone<span></span></th>
+        <td class="input-group"><input type="tel" pattern="\d{3}-\d{3}-\d{4}" id="phone" name="phone" class="form-control" placeholder="ex. 000-000-0000" required disabled/></td>
+    </tr>
+    <tr>
+        <th>Date of Birth<span></span></th>
+        <td class="input-group"><input type="date" id="dob" name="dob" class="form-control" min="{{ 'now'|date_modify('-150 years')|date('Y-m-d') }}" max="{{ 'now'|date('Y-m-d') }}" required disabled/></td>
+    </tr>
+    <tr>
+        <th>Health Card Number<span></span></th>
+        <td class="input-group"><input type="text" id="healthcard" name="healthcard" class="form-control" placeholder="ex. ABCD12345678" disabled /></td>
+    </tr>
+    <tr>
+        <th>Practitioner<span></span></th>
+        <td class="input-group">
+            <select id="doctor" name="doctor" class="form-select" disabled >
+                <option value="">(not assigned)</option>
+                {% for doc in docList %}
+                <option value="{{ doc.id }}">{{ doc.lastName }}, {{ doc.firstName }}</option>
+                {% endfor %}
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th>License Number<span></span></th>
+        <td class="input-group"><input type="text" id="license" name="license" class="form-control" placeholder="ex. 12345" disabled /></td>
+    </tr>
+    <tr>
+        <th>Photo<span></span></th>
+        <td class="input-group"><input type="file" id="photo" name="photo" class="form-control" accept="image/*" disabled/></td>
+    </tr>
+</table>
+<p>* denotes required field</p>
+<button type="submit" class="btn btn-primary" name="submit" id="submit" class="form-control" disabled>Submit</button>
+</form>
+{% endblock content %}
+{% block footer %}{% endblock footer %}
